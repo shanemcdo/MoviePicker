@@ -25,6 +25,7 @@ async function main() {
 	$('#movie-title').text(movie.title);
 	$('#movie-date').text(movie.release_date);
 	$('#movie-desc').text(movie.overview);
+	// $('body').css('background-image', `url(${makeImageUrl(movie.backdrop_path)})`);
 }
 
 main();
