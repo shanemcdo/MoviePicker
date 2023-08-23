@@ -1,4 +1,8 @@
-const imageBaseURL = "https://image.tmdb.org/t/p/";
+const apiBaseURL = 'https://api.themoviedb.org/3';
+const discoverMovieBaseURL = `${apiBaseURL}/discover/movie`;
+const imageBaseURL = 'https://image.tmdb.org/t/p';
+const posterBaseURL = `${imageBaseURL}/original`;
+const logoBaseURL = `${imageBaseURL}/w45`;
 const tmdbOptions = {
 	method: 'GET',
 	headers: {
@@ -11,21 +15,21 @@ function random(array) {
 	return array[Math.floor(Math.random() * array.length)];
 }
 
-function makeImageUrl(fragment) {
-	return `${imageBaseURL}original${fragment}`;
+function makeImageURL(path) {
+	return `${posterBaseURL}${path}`;
 }
 
 async function main() {
-	const res = await fetch('https://api.themoviedb.org/3/discover/movie', tmdbOptions);
+	const res = await fetch(discoverMovieBaseURL, tmdbOptions);
 	const json = await res.json();
 	console.log(json);
 	const movie = random(json.results);
 	console.log(movie);
-	$('#movie-poster').attr('src', makeImageUrl(movie.poster_path));
+	$('#movie-poster').attr('src', makeImageURL(movie.poster_path));
 	$('#movie-title').text(movie.title);
 	$('#movie-date').text(movie.release_date);
 	$('#movie-desc').text(movie.overview);
-	// $('body').css('background-image', `url(${makeImageUrl(movie.backdrop_path)})`);
+	// $('body').css('background-image', `URL(${makeImageURL(movie.backdrop_path)})`);
 }
 
 main();
