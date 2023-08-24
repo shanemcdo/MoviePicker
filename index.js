@@ -40,7 +40,7 @@ async function getMovie() {
 	const movie = random(json.results);
 	console.log(movie);
 	$('#movie-poster').attr('src', makeImageURL(movie.poster_path));
-	$('#movie-title').text(movie.title);
+	$('.movie-title').text(movie.title);
 	$('#movie-date').text(movie.release_date);
 	$('#movie-rating').text(`${movie.vote_average}/10`);
 	$('#movie-desc').text(movie.overview);

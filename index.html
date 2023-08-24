@@ -13,7 +13,7 @@
     </head>
     <body>
 		<nav id="banner">
-			<button id="hamburger" class="borderless-button" onclick="toggleFiltersSidebar()"><i id="hamburger-glyph" class="fa-solid fa-bars"></i></button>
+			<button id="hamburger" class="borderless-button mobile-only" onclick="toggleFiltersSidebar()"><i id="hamburger-glyph" class="fa-solid fa-bars"></i></button>
 			<p id="website-title">Movie Picker</p>
 			<button id="refresh-button" class="borderless-button" onclick="getMovie();"><i class="fa-solid fa-arrows-rotate"></i></button>
 		</nav>
@@ -21,13 +21,16 @@
 		</div>
 		<div id="movie-info-wrapper">
 			<div id="movie-info">
-				<p id="movie-title"></p>
+				<p class="movie-title mobile-only"></p>
 				<img id="movie-poster" alt="Movie Poster"/>
-				<div id="movie-date-and-rating" class="pair">
-					<p id="movie-date"></p>
-					<p id="movie-rating"></p>
+				<div id="movie-text">
+					<p class="movie-title desktop-only"></p>
+					<div id="movie-date-and-rating" class="pair">
+						<p id="movie-date"></p>
+						<p id="movie-rating"></p>
+					</div>
+					<p id="movie-desc"></p>
 				</div>
-				<p id="movie-desc"></p>
 			</div>
 		</div>
     </body>

@@ -1,5 +1,5 @@
 html {
-	--sidebar-size: 35vw;
+	--sidebar-size: 30vw;
 	--bg: #111;
 	--bg-accent: #252525;
 	--fg: #eee;
@@ -49,11 +49,11 @@ body {
 }
 
 #movie-info {
-	max-width: 30vw;
 	margin: auto;
+	display: flex;
 }
 
-#movie-title {
+.movie-title {
 	margin: 0.2rem 0;
 	font-weight: bold;
 	font-size: 1.2rem;
@@ -61,6 +61,13 @@ body {
 
 #movie-poster {
 	max-width: 100%;
+	max-height: 90vh;
+	margin: 0.7rem;
+}
+
+#movie-text {
+	margin: 0.7rem;
+	margin-left: 0;
 }
 
 #movie-date-and-rating {
@@ -70,7 +77,6 @@ body {
 #hamburger {
 	font-size: 1.1rem;
 	float: left;
-	display: none;
 }
 
 .borderless-button {
@@ -93,6 +99,10 @@ body {
 	float: right;
 }
 
+.mobile-only {
+	display: none;
+}
+
 @media only screen and (max-width: 700px) {
 	html { 
 		--sidebar-size: 90vw;
@@ -109,9 +119,18 @@ body {
 
 	#movie-info {
 		max-width: 95vw;
+		display: inherit;
 	}
 
-	#hamburger { 
-		display: inline;
+	#movie-poster {
+		max-height: inherit;
+	}
+
+	.mobile-only {
+		display: inherit;
+	}
+
+	.desktop-only {
+		display: none;
 	}
 }
