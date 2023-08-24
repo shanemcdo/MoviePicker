@@ -40,7 +40,6 @@ body {
 
 #refresh-button {
 	float: right;
-	margin: auto;
 	font-size: 1.1rem;
 }
 
@@ -122,8 +121,13 @@ body {
 		display: inherit;
 	}
 
+	#movie-text {
+		margin: 0;
+	}
+
 	#movie-poster {
 		max-height: inherit;
+		margin: 0;
 	}
 
 	.mobile-only {
