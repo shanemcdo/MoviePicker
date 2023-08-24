@@ -66,6 +66,12 @@ body {
 	font-weight: bold;
 }
 
+#hamburger {
+	font-size: 1.1rem;
+	float: left;
+	display: none;
+}
+
 .borderless-button {
 	padding: 0;
 	border: none;
@@ -84,4 +90,27 @@ body {
 
 .pair *:nth-child(2) {
 	float: right;
+}
+
+@media only screen and (max-width: 760px) {
+	html { 
+		--sidebar-size: 90vw;
+	}
+
+	#filters {
+		left: -90vw;
+		transition: left 0.2s
+	}
+
+	#movie-info-wrapper {
+		margin-left: 0;
+	}
+
+	#movie-info {
+		max-width: 95vw;
+	}
+
+	#hamburger { 
+		display: inline;
+	}
 }

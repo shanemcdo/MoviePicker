@@ -19,6 +19,20 @@ function makeImageURL(path) {
 	return `${posterBaseURL}${path}`;
 }
 
+function toggleFiltersSidebar() {
+	const filters = $('#filters');
+	const hamburger = $('#hamburger-glyph');
+	if(hamburger.hasClass('fa-x')) {
+		filters.css('left', '');
+		hamburger.removeClass('fa-x');
+		hamburger.addClass('fa-bars');
+	} else {
+		filters.css('left', 0);
+		hamburger.removeClass('fa-bars');
+		hamburger.addClass('fa-x');
+	}
+}
+
 async function getMovie() {
 	const res = await fetch(discoverMovieBaseURL, tmdbOptions);
 	const json = await res.json();
