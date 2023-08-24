@@ -102,7 +102,7 @@ body {
 	display: none;
 }
 
-@media only screen and (max-width: 700px) {
+@media only screen and (max-width: 820px) {
 	html { 
 		--sidebar-size: 90vw;
 	}
@@ -117,7 +117,7 @@ body {
 	}
 
 	#movie-info {
-		max-width: 95vw;
+		max-width: 75vw;
 		display: inherit;
 	}
 
