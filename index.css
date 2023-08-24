@@ -41,6 +41,24 @@ body {
 	overflow-x: hidden;
 }
 
+#credit {
+	position: fixed;	
+	bottom: 0;
+	width: var(--sidebar-size);
+	padding: 0.5rem;
+}
+
+#credit p {
+	font-size: 0.7em;
+	display: inline;
+}
+
+#credit img {
+	height: 4vh;
+	filter: brightness(10) grayscale(1);
+	display: inline;
+}
+
 #website-title {
 	display: inline;
 	font-size: 1.3rem;
