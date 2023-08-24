@@ -9,11 +9,22 @@
         <script src="index.js" defer></script>
     </head>
     <body>
-		<h1>Movie Picker</h1>
-		<button onclick="getMovie();"><i class="fa-solid fa-arrows-rotate"></i></button>
-		<img id="movie-poster" alt="Movie Poster"/>
-		<h2 id="movie-title"></h2>
-		<h3 id="movie-date"></h3>
-		<p id="movie-desc"></p>
+		<nav id="banner">
+			<p id="website-title">Movie Picker</p>
+			<button id="refresh-button" class="borderless-button" onclick="getMovie();"><i class="fa-solid fa-arrows-rotate"></i></button>
+		</nav>
+		<div id="filters">
+		</div>
+		<div id="movie-info-wrapper">
+			<div id="movie-info">
+				<p id="movie-title"></p>
+				<img id="movie-poster" alt="Movie Poster"/>
+				<div id="movie-date-and-rating" class="pair">
+					<p id="movie-date"></p>
+					<p id="movie-rating"></p>
+				</div>
+				<p id="movie-desc"></p>
+			</div>
+		</div>
     </body>
 </html>

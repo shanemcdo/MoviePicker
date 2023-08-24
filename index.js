@@ -28,6 +28,7 @@ async function getMovie() {
 	$('#movie-poster').attr('src', makeImageURL(movie.poster_path));
 	$('#movie-title').text(movie.title);
 	$('#movie-date').text(movie.release_date);
+	$('#movie-rating').text(`${movie.vote_average}/10`);
 	$('#movie-desc').text(movie.overview);
 	// $('body').css('background-image', `URL(${makeImageURL(movie.backdrop_path)})`);
 }
