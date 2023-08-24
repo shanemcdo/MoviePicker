@@ -1,7 +1,10 @@
 html {
 	--sidebar-size: 30vw;
 	--bg: #111;
+	--bg-transparent: rgba(17, 17, 17, 0.75);
 	--bg-accent: #252525;
+	--bg-accent-opacity: 0.8;
+	--bg-accent-transparent: rgba(37, 37, 37, var(--bg-accent-opacity));
 	--fg: #eee;
 	--fg-accent: #f55;
 }
@@ -17,6 +20,11 @@ body {
 	font-family: "lexend deca"
 }
 
+body {
+	background-position: center;
+	background-size: cover;
+}
+
 #banner {
 	background: var(--bg-accent);
 	padding: 0.3rem;
@@ -26,7 +34,7 @@ body {
 }
 
 #filters {
-	background: var(--bg-accent);
+	background: var(--bg-accent-transparent);
 	position: fixed;
 	height: 100%;
 	width: var(--sidebar-size);
@@ -45,6 +53,7 @@ body {
 
 #movie-info-wrapper {
 	margin-left: var(--sidebar-size);
+	background: transparent;
 }
 
 #movie-info {
@@ -53,7 +62,8 @@ body {
 }
 
 .movie-title {
-	margin: 0.2rem 0;
+	padding: 0.2rem 0;
+	margin: 0;
 	font-weight: bold;
 	font-size: 1.2rem;
 }
@@ -67,6 +77,7 @@ body {
 #movie-text {
 	margin: 0.7rem;
 	margin-left: 0;
+	margin-bottom: 0;
 }
 
 #movie-date-and-rating {
@@ -105,6 +116,11 @@ body {
 @media only screen and (max-width: 820px) {
 	html { 
 		--sidebar-size: 90vw;
+		--bg-accent-opacity: 0.97;
+	}
+
+	body {
+		background: var(--bg) !important;
 	}
 
 	#filters {

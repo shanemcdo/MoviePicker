@@ -44,7 +44,7 @@ async function getMovie() {
 	$('#movie-date').text(movie.release_date);
 	$('#movie-rating').text(`${movie.vote_average}/10`);
 	$('#movie-desc').text(movie.overview);
-	// $('body').css('background-image', `URL(${makeImageURL(movie.backdrop_path)})`);
+	$('body').css('background-image', `linear-gradient(var(--bg-transparent), var(--bg-transparent)), url(${makeImageURL(movie.backdrop_path)})`);
 }
 
 getMovie();
