@@ -23,11 +23,13 @@ function toggleFiltersSidebar() {
 	const filters = $('#filters');
 	const hamburger = $('#hamburger-glyph');
 	if(hamburger.hasClass('fa-x')) {
+		$('#credit').css('left', '');
 		filters.css('left', '');
 		hamburger.removeClass('fa-x');
 		hamburger.addClass('fa-bars');
 	} else {
 		filters.css('left', 0);
+		$('#credit').css('left', 0);
 		hamburger.removeClass('fa-bars');
 		hamburger.addClass('fa-x');
 	}
