@@ -14,6 +14,7 @@ body {
     height: 100%;
 	background: var(--bg);
 	color: var(--fg);
+	font-family: "lexend deca"
 }
 
 #banner {
