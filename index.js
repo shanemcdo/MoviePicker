@@ -19,7 +19,7 @@ function makeImageURL(path) {
 	return `${posterBaseURL}${path}`;
 }
 
-async function main() {
+async function getMovie() {
 	const res = await fetch(discoverMovieBaseURL, tmdbOptions);
 	const json = await res.json();
 	console.log(json);
@@ -32,4 +32,4 @@ async function main() {
 	// $('body').css('background-image', `URL(${makeImageURL(movie.backdrop_path)})`);
 }
 
-main();
+getMovie();
