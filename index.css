@@ -23,6 +23,7 @@ body {
 body {
 	background-position: center;
 	background-size: cover;
+	overflow: hidden;
 }
 
 #banner {
@@ -87,7 +88,7 @@ body {
 }
 
 #movie-poster {
-	max-width: 100%;
+	max-width: 40vw;
 	max-height: 90vh;
 	margin: 0.7rem;
 }
@@ -127,6 +128,10 @@ body {
 	float: right;
 }
 
+.selector-list {
+	list-style-type: none;
+}
+
 .mobile-only {
 	display: none;
 }
@@ -138,7 +143,8 @@ body {
 	}
 
 	body {
-		background: var(--bg) !important;
+		background-image: unset !important;
+		overflow: inherit;
 	}
 
 	#credit,
@@ -163,6 +169,7 @@ body {
 	#movie-poster {
 		max-height: inherit;
 		margin: 0;
+		max-width: 100%;
 	}
 
 	.mobile-only {

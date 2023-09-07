@@ -1,5 +1,6 @@
 const apiBaseURL = 'https://api.themoviedb.org/3';
 const discoverMovieBaseURL = `${apiBaseURL}/discover/movie`;
+const genreListURL = `${apiBaseURL}/genre/movie/list`;
 const imageBaseURL = 'https://image.tmdb.org/t/p';
 const posterBaseURL = `${imageBaseURL}/original`;
 const logoBaseURL = `${imageBaseURL}/w45`;
@@ -10,6 +11,8 @@ const tmdbOptions = {
 		Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxOWNjMDI5ODQzODAyMjI5MmFiNTBiZmI2OWEzODUwMiIsInN1YiI6IjYzMWY5ZGMyZTU1OTM3MDA3YWRhMWUxNCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.B4o3rNSDNFr_2_1l0hHCWEQO-YNZ1CAk7QtPrzeQwQo'
 	}
 };
+let allGenres = []
+const selectedGenres = new Set();
 
 function random(array) {
 	return array[Math.floor(Math.random() * array.length)];
@@ -35,12 +38,31 @@ function toggleFiltersSidebar() {
 	}
 }
 
-async function getMovie() {
-	const res = await fetch(discoverMovieBaseURL, tmdbOptions);
+async function getGenres() {
+	const res = await fetch(genreListURL, tmdbOptions);
+	return (await res.json()).genres;
+};
+
+async function getMovies(args) {
+	let query = '';
+	for(const arg in args) {
+		if(!args[arg]) continue;
+		if(query) {
+			query += ',';
+		}
+		query += `${arg}=${args[arg]}`;
+	};
+	const url = discoverMovieBaseURL + '?' + query;
+	const res = await fetch(url, tmdbOptions);
 	const json = await res.json();
-	console.log(json);
-	const movie = random(json.results);
-	console.log(movie);
+	return json;
+};
+
+async function getMovie() {
+	const movies = await getMovies({
+		'with_genres': [...selectedGenres].join(',')
+	});
+	const movie = random(movies.results);
 	$('#movie-poster').attr('src', makeImageURL(movie.poster_path));
 	$('.movie-title').text(movie.title);
 	$('#movie-date').text(movie.release_date);
@@ -49,4 +71,21 @@ async function getMovie() {
 	$('body').css('background-image', `linear-gradient(var(--bg-transparent), var(--bg-transparent)), url(${makeImageURL(movie.backdrop_path)})`);
 }
 
-getMovie();
+async function main() {
+	allGenres = await getGenres();
+	allGenres.forEach(item => {
+		$('.genres').append(`<li><input type="checkbox" id="${item.id}" value="${item.id}"><label for="${item.id}">${item.name}</label></li>`);
+	});
+	$('.genres input[type="checkbox"]').click(function() {
+		const el = $(this);
+		const checked = el.prop('checked');
+		if(el.prop('checked')) {
+			selectedGenres.add(el.val())
+		} else {
+			selectedGenres.delete(el.val())
+		}
+	});
+	await getMovie();
+};
+
+main();
