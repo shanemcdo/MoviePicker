@@ -70,6 +70,7 @@ async function getMovie() {
 	const movies = await getMovies({
 		'watch_region': 'US',
 		'certification_country': 'US',
+		'certification.gte': 'G',
 		'certification.lte': 'PG-13',
 		'with_genres': [...selectedGenres].join(',')
 	});
