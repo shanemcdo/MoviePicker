@@ -68,6 +68,9 @@ async function getMovies(args) {
 
 async function getMovie() {
 	const movies = await getMovies({
+		'watch_region': 'US',
+		'certification_country': 'US',
+		'certification.lte': 'PG-13',
 		'with_genres': [...selectedGenres].join(',')
 	});
 	const movie = random(movies.results);
