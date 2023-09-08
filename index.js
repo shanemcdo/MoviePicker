@@ -48,7 +48,7 @@ async function getMovies(args) {
 	for(const arg in args) {
 		if(!args[arg]) continue;
 		if(query) {
-			query += ',';
+			query += '&';
 		}
 		query += `${arg}=${args[arg]}`;
 	};
@@ -74,9 +74,9 @@ async function getMovie() {
 async function main() {
 	allGenres = await getGenres();
 	allGenres.forEach(item => {
-		$('.genres').append(`<li><input type="checkbox" id="${item.id}" value="${item.id}"><label for="${item.id}">${item.name}</label></li>`);
+		$('#genre-selector').append(`<li><input type="checkbox" id="${item.id}" value="${item.id}"><label for="${item.id}">${item.name}</label></li>`);
 	});
-	$('.genres input[type="checkbox"]').click(function() {
+	$('#genre-selector input[type="checkbox"]').click(function() {
 		const el = $(this);
 		const checked = el.prop('checked');
 		if(el.prop('checked')) {
