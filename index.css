@@ -103,6 +103,21 @@ body {
 	font-weight: bold;
 }
 
+
+#movie-genres {
+	margin-top: 1rem;
+	display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.movie-genre {
+	background: var(--bg-accent);
+	padding: 0.3rem;
+	margin: 0.1rem;
+	border-radius: 0.5rem;
+}
+
 #hamburger {
 	font-size: 1.1rem;
 	float: left;

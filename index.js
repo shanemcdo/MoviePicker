@@ -38,6 +38,14 @@ function toggleFiltersSidebar() {
 	}
 }
 
+function getGenre(id) {
+	for(const genre of allGenres) {
+		if(id == genre.id)
+			return genre.name
+	};
+	return name;
+};
+
 async function getGenres() {
 	const res = await fetch(genreListURL, tmdbOptions);
 	return (await res.json()).genres;
@@ -69,6 +77,12 @@ async function getMovie() {
 	$('#movie-rating').text(`${movie.vote_average}/10`);
 	$('#movie-desc').text(movie.overview);
 	$('body').css('background-image', `linear-gradient(var(--bg-transparent), var(--bg-transparent)), url(${makeImageURL(movie.backdrop_path)})`);
+	$('#movie-genres').html('')
+	for(const genre of movie.genre_ids.map(getGenre)) {
+		$('#movie-genres').append(
+			`<span class="movie-genre">${genre}</span>`
+		);
+	};
 }
 
 async function main() {
