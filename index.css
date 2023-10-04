@@ -123,6 +123,10 @@ body {
 	float: left;
 }
 
+.movie-genre {
+	cursor: pointer;
+}
+
 .borderless-button {
 	padding: 0;
 	border: none;
