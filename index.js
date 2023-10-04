@@ -96,7 +96,6 @@ async function main() {
 	});
 	$('#genre-selector input[type="checkbox"]').click(function() {
 		const el = $(this);
-		const checked = el.prop('checked');
 		if(el.prop('checked')) {
 			selectedGenres.add(el.val())
 		} else {
