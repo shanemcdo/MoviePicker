@@ -11,9 +11,12 @@ const tmdbOptions = {
 		Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxOWNjMDI5ODQzODAyMjI5MmFiNTBiZmI2OWEzODUwMiIsInN1YiI6IjYzMWY5ZGMyZTU1OTM3MDA3YWRhMWUxNCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.B4o3rNSDNFr_2_1l0hHCWEQO-YNZ1CAk7QtPrzeQwQo'
 	}
 };
-let allGenres = []
+let allGenres = [];
 const selectedGenres = new Set();
 const excludedGenres = new Set();
+const seenMovies = new Set();
+let currentPage = 1;
+let previousFilters = {};
 
 function random(array) {
 	return array[Math.floor(Math.random() * array.length)];
@@ -68,15 +71,35 @@ async function getMovies(args) {
 };
 
 async function getMovie() {
-	const movies = await getMovies({
-		'watch_region': 'US',
-		'certification_country': 'US',
-		'certification.gte': 'G',
-		'certification.lte': 'PG-13',
-		'with_genres': [...selectedGenres].join(','),
-		'without_genres': [...excludedGenres].join(',')
-	});
-	const movie = random(movies.results);
+	while(1){
+		const args = {
+			'watch_region': 'US',
+			'certification_country': 'US',
+			'certification.gte': 'G',
+			'certification.lte': 'PG-13',
+			'with_genres': [...selectedGenres].join(','),
+			'without_genres': [...excludedGenres].join(','),
+			'page': currentPage
+		};
+		if(
+			args.with_genres !== previousFilters.with_genres
+			|| args.without_genres !== previousFilters.without_genres
+		) {
+			args.page = currentPage = 1;
+		}
+		previousFilters = args;
+		const movies = await getMovies(args);
+		const filteredArray = movies.results.filter(movie => !seenMovies.has(movie.id));
+		if(filteredArray.length > 0) {
+			return random(filteredArray);
+		}
+		currentPage += 1;
+	}
+};
+
+async function displayMovie() {
+	const movie = await getMovie();
+	seenMovies.add(movie.id);
 	$('#movie-poster').attr('src', makeImageURL(movie.poster_path));
 	$('.movie-title').text(movie.title);
 	$('#movie-date').text(movie.release_date);
@@ -133,7 +156,7 @@ async function main() {
 			}
 		}
 	});
-	await getMovie();
+	await displayMovie();
 };
 
 main();
