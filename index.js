@@ -1,6 +1,7 @@
 const apiBaseURL = 'https://api.themoviedb.org/3';
 const discoverMovieBaseURL = `${apiBaseURL}/discover/movie`;
 const genreListURL = `${apiBaseURL}/genre/movie/list`;
+const providerListURL = `${apiBaseURL}/watch/providers/movie`;
 const imageBaseURL = 'https://image.tmdb.org/t/p';
 const posterBaseURL = `${imageBaseURL}/original`;
 const logoBaseURL = `${imageBaseURL}/w45`;
@@ -11,12 +12,14 @@ const tmdbOptions = {
 		Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxOWNjMDI5ODQzODAyMjI5MmFiNTBiZmI2OWEzODUwMiIsInN1YiI6IjYzMWY5ZGMyZTU1OTM3MDA3YWRhMWUxNCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.B4o3rNSDNFr_2_1l0hHCWEQO-YNZ1CAk7QtPrzeQwQo'
 	}
 };
-let allGenres = [];
 const selectedGenres = new Set();
 const excludedGenres = new Set();
+const selectedProviders = new Set();
 const seenMovies = new Set();
 let currentPage = 1;
 let previousFilters = {};
+let allGenres = [];
+let allProviders = [];
 
 function random(array) {
 	return array[Math.floor(Math.random() * array.length)];
@@ -24,6 +27,10 @@ function random(array) {
 
 function makeImageURL(path) {
 	return `${posterBaseURL}${path}`;
+}
+
+function makeLogoURL(path) {
+	return `${logoBaseURL}${path}`;
 }
 
 function toggleFiltersSidebar() {
@@ -55,6 +62,11 @@ async function getGenres() {
 	return (await res.json()).genres;
 };
 
+async function getProviders() {
+	const res = await fetch(providerListURL, tmdbOptions);
+	return (await res.json()).results;
+};
+
 async function getMovies(args) {
 	let query = '';
 	for(const arg in args) {
@@ -79,11 +91,13 @@ async function getMovie() {
 			'certification.lte': 'PG-13',
 			'with_genres': [...selectedGenres].join(','),
 			'without_genres': [...excludedGenres].join(','),
+			'with_watch_providers': [...selectedProviders].join('|'),
 			'page': currentPage
 		};
 		if(
 			args.with_genres !== previousFilters.with_genres
 			|| args.without_genres !== previousFilters.without_genres
+			|| args.with_providers !== previousFilters.with_providers
 		) {
 			args.page = currentPage = 1;
 		}
@@ -146,7 +160,7 @@ async function main() {
 	});
 	$('#genre-selector input[type="checkbox"]').click(function() {
 		const el = $(this);
-		const id = $(this).val();
+		const id = el.val();
 		if(selectedGenres.has(id)) {
 			selectedGenres.delete(id);
 		} else {
@@ -154,6 +168,24 @@ async function main() {
 			if(excludedGenres.has(id)) {
 				$('input[type="button"]', el.parent()).click();
 			}
+		}
+	});
+	allProviders = await getProviders();
+	allProviders.forEach(item => {
+		$('#provider-selector').append(
+			`<li>
+				<input type="checkbox" value="${item.provider_id}">
+				<img class="logo" src="${makeLogoURL(item.logo_path)}"/>
+				<label>${item.provider_name}</label>
+			</li>`
+		);
+	});
+	$('#provider-selector input[type="checkbox"]').click(function() {
+		const id = $(this).val();
+		if(selectedProviders.has(id)) {
+			selectedProviders.delete(id);
+		} else {
+			selectedProviders.add(id);
 		}
 	});
 	await displayMovie();
