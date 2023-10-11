@@ -80,10 +80,8 @@ async function getMovies(args) {
 	try {
 		const res = await fetch(url, tmdbOptions);
 		const json = await res.json();
-		console.log(json);
 		return json;
 	} catch (e) {
-		console.error(e);
 		return null;
 	}
 };
