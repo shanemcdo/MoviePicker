@@ -111,6 +111,14 @@ body {
     flex-wrap: wrap;
 }
 
+#error-info {
+	padding: 1rem;
+}
+
+#error-info h1 {
+	text-align: center;
+}
+
 .movie-genre {
 	background: var(--bg-accent);
 	padding: 0.3rem;

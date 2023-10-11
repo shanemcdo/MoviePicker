@@ -77,9 +77,15 @@ async function getMovies(args) {
 		query += `${arg}=${args[arg]}`;
 	};
 	const url = discoverMovieBaseURL + '?' + query;
-	const res = await fetch(url, tmdbOptions);
-	const json = await res.json();
-	return json;
+	try {
+		const res = await fetch(url, tmdbOptions);
+		const json = await res.json();
+		console.log(json);
+		return json;
+	} catch (e) {
+		console.error(e);
+		return null;
+	}
 };
 
 async function getMovie() {
@@ -103,6 +109,23 @@ async function getMovie() {
 		}
 		previousFilters = args;
 		const movies = await getMovies(args);
+		if(movies === null) {
+			$('#error-message').html('Could not connect to API');
+			return null;
+		}
+		if(movies.results === undefined) {
+
+			$('#error-message').html(`API returned message: ${movies.status_message}`);
+			return null;
+		}
+		if(movies.total_pages < 1) {
+			$('#error-message').html('No movies found with selected filters');
+			return null;
+		}
+		if(movies.total_pages < currentPage) {
+			$('#error-message').html('No more movies remaining');
+			return null;
+		}
 		const filteredArray = movies.results.filter(movie => !seenMovies.has(movie.id));
 		if(filteredArray.length > 0) {
 			return random(filteredArray);
@@ -111,8 +134,22 @@ async function getMovie() {
 	}
 };
 
+async function displayError() {
+	$('#movie-info').hide();
+	// get rid of background from movie
+	$('body').css('background-image', '');
+	$('#error-info').show();
+};
+
 async function displayMovie() {
+	$('#error-message').html('Loading...')
 	const movie = await getMovie();
+	if(movie === null) {
+		displayError();
+		return;
+	}
+	$('#error-info').hide();
+	$('#movie-info').show();
 	seenMovies.add(movie.id);
 	$('#movie-poster').attr('src', makeImageURL(movie.poster_path));
 	$('.movie-title').text(movie.title);
