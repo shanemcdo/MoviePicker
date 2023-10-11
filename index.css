@@ -116,15 +116,12 @@ body {
 	padding: 0.3rem;
 	margin: 0.1rem;
 	border-radius: 0.5rem;
+	cursor: pointer;
 }
 
 #hamburger {
 	font-size: 1.1rem;
 	float: left;
-}
-
-.movie-genre {
-	cursor: pointer;
 }
 
 .logo {
