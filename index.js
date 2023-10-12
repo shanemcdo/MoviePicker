@@ -13,6 +13,12 @@ const tmdbOptions = {
 		Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxOWNjMDI5ODQzODAyMjI5MmFiNTBiZmI2OWEzODUwMiIsInN1YiI6IjYzMWY5ZGMyZTU1OTM3MDA3YWRhMWUxNCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.B4o3rNSDNFr_2_1l0hHCWEQO-YNZ1CAk7QtPrzeQwQo'
 	}
 };
+const monetizationTypes = { 
+	flatrate: 'Stream',
+	buy: 'Buy',
+	rent: 'Rent',
+};
+const selectedMonetizationTypes = new Set();
 const selectedGenres = new Set();
 const excludedGenres = new Set();
 const selectedProviders = new Set();
@@ -107,6 +113,7 @@ async function getMovie() {
 			'with_genres': [...selectedGenres].join(','),
 			'without_genres': [...excludedGenres].join(','),
 			'with_watch_providers': [...selectedProviders].join('|'),
+			'with_watch_monetization_types': [...selectedMonetizationTypes].join('|'),
 			'page': currentPage
 		};
 		if(
@@ -178,7 +185,8 @@ async function displayMovie() {
 	const providers = await getMovieProviders(movie.id);
 	const providersEl = $('#movie-providers');
 	providersEl.html('');
-	for(const [name, type] of [['Stream', 'flatrate'], ['Rent', 'rent'], ['Buy', 'buy']]) {
+	for(const type in monetizationTypes) {
+		const name = monetizationTypes[type];
 		if(providers[type] !== undefined && providers[type].length > 0) {
 			providersEl.append(`<p>${name}</p>`);
 			const logos = providers[type].map(provider =>
@@ -252,6 +260,23 @@ async function main() {
 			selectedProviders.delete(id);
 		} else {
 			selectedProviders.add(id);
+		}
+	});
+	for(const type in monetizationTypes) {
+		const name = monetizationTypes[type];
+		$('#monetization-selector').append(
+			`<li>
+				<input type="checkbox" id="monetization-${type}" value="${type}">
+				<label for="monetization-${type}">${name}</label>
+			</li>`
+		);
+	};
+	$('#monetization-selector input[type="checkbox"]').click(function() {
+		const type = $(this).val();
+		if(selectedMonetizationTypes.has(type)) {
+			selectedMonetizationTypes.delete(type);
+		} else {
+			selectedMonetizationTypes.add(type);
 		}
 	});
 	await displayMovie();
