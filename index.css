@@ -1,5 +1,4 @@
 html {
-	--sidebar-size: 30vw;
 	--bg: #111;
 	--bg-transparent: rgba(17, 17, 17, 0.75);
 	--bg-accent: #252525;
@@ -24,6 +23,8 @@ body {
 	background-position: center;
 	background-size: cover;
 	overflow: hidden;
+	display: flex;
+	flex-direction: column;
 }
 
 #banner {
@@ -34,19 +35,22 @@ body {
 	top: 0;
 }
 
+#wrapper {
+	min-height: 0px;
+	flex-grow: 1;
+	display: grid;
+	grid-template-columns: 30% auto;
+}
+
 #filters {
 	background: var(--bg-accent-transparent);
-	position: fixed;
-	height: 100%;
-	width: var(--sidebar-size);
 	overflow-x: hidden;
+	min-height: 0px;
+	display: flex;
+	flex-direction: column;
 }
 
 #credit {
-	position: fixed;	
-	bottom: 0;
-	width: var(--sidebar-size);
-	background: var(--bg-accent-transparent);
 	padding-top: 0.3rem;
 }
 
@@ -72,13 +76,14 @@ body {
 }
 
 #movie-info-wrapper {
-	margin-left: var(--sidebar-size);
 	background: transparent;
+	height: 100%;
 }
 
 #movie-info {
 	margin: auto;
 	display: flex;
+	height: 100%;
 }
 
 .movie-title {
@@ -133,6 +138,10 @@ body {
 #hamburger {
 	font-size: 1.1rem;
 	float: left;
+}
+
+.flex-spacer {
+	flex-grow: 1;
 }
 
 .logo {
@@ -207,10 +216,26 @@ li:has(.exclude-button):hover > .exclude-button {
 		overflow: inherit;
 	}
 
-	#credit,
+	#wrapper {
+		display: block;
+	}
+
+	#credit {
+		/* hacky workaround to not actually knowing real height of #filters on mobile */
+		margin-bottom: 3rem;
+	}
+
+	#filters,
+	#credit {
+		width: var(--sidebar-size)
+	}
+
 	#filters {
+		position: fixed;
 		left: -90vw;
 		transition: left 0.2s
+		overflow: auto;
+		height: 100%;
 	}
 
 	#movie-info-wrapper {
