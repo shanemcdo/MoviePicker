@@ -284,6 +284,23 @@ async function main() {
 			selectedMonetizationTypes.add(type);
 		}
 	});
+	$('.selector-search').on('input', function() {
+		const el = $(this);
+		const value = el.val().toLowerCase();
+		const lis = $('li', el.parent());
+		if(value === '') {
+			lis.show();
+			return;
+		}
+		lis.each(function() {
+			const name = $('label', this).html().toLowerCase();
+			if(name.includes(value)) {
+				$(this).show();
+			} else {
+				$(this).hide();
+			}
+		});
+	});
 	await displayMovie();
 };
 
