@@ -188,7 +188,7 @@ async function displayMovie() {
 	for(const type in monetizationTypes) {
 		const name = monetizationTypes[type];
 		if(providers[type] !== undefined && providers[type].length > 0) {
-			providersEl.append(`<p>${name}</p>`);
+			providersEl.append(`<p><b>${name}</b></p>`);
 			const logos = providers[type].map(provider =>
 				`<img
 					class="big_logo logo"
