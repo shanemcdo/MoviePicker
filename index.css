@@ -144,6 +144,11 @@ body {
 	margin: 0.2rem;
 }
 
+.monetization-header {
+	margin: 0;
+	margin-top: 0.5rem;
+}
+
 .borderless-button {
 	padding: 0;
 	border: none;
