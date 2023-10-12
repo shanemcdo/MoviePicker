@@ -209,7 +209,7 @@ li:has(.exclude-button):hover > .exclude-button {
 	}
 
 	#movie-info-wrapper {
-		margin-left: 0e
+		margin-left: 0;
 	}
 
 	#movie-info {
