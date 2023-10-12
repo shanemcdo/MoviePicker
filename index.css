@@ -46,7 +46,8 @@ body {
 	position: fixed;	
 	bottom: 0;
 	width: var(--sidebar-size);
-	padding: 0.5rem;
+	background: var(--bg-accent-transparent);
+	padding-top: 0.3rem;
 }
 
 #credit p {
