@@ -171,9 +171,9 @@ async function main() {
 	allGenres.forEach(item => {
 		$('#genre-selector').append(
 			`<li>
-				<input type="checkbox" value="${item.id}">
+				<input type="checkbox" value="${item.id}" id="genre-${item.id}">
 				<input type="button" value="X" data-genre-id='${item.id}' title="Exclude ${item.name} Genre ">
-				<label for="${item.id}">${item.name}</label>
+				<label for="genre-${item.id}">${item.name}</label>
 			</li>`
 		);
 	});
@@ -209,9 +209,9 @@ async function main() {
 	allProviders.forEach(item => {
 		$('#provider-selector').append(
 			`<li>
-				<input type="checkbox" value="${item.provider_id}">
+				<input type="checkbox" id="$provider-${item.provider_id}" value="${item.provider_id}">
 				<img class="logo" src="${makeLogoURL(item.logo_path)}"/>
-				<label>${item.provider_name}</label>
+				<label for="$provider-${item.provider_id}">${item.provider_name}</label>
 			</li>`
 		);
 	});
