@@ -197,7 +197,6 @@ async function displayMovie() {
 					title="${provider.provider_name}"
 				>`
 			).join('');
-			console.log(logos);
 			const list = providersEl.append(`<a href="${providers.link}">${logos}</a>`);
 		}
 	}
