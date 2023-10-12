@@ -5,6 +5,7 @@ const providerListURL = `${apiBaseURL}/watch/providers/movie`;
 const imageBaseURL = 'https://image.tmdb.org/t/p';
 const posterBaseURL = `${imageBaseURL}/original`;
 const logoBaseURL = `${imageBaseURL}/w45`;
+const bigLogoBaseURL = `${imageBaseURL}/w500`;
 const tmdbOptions = {
 	method: 'GET',
 	headers: {
@@ -31,6 +32,10 @@ function makeImageURL(path) {
 
 function makeLogoURL(path) {
 	return `${logoBaseURL}${path}`;
+}
+
+function makeBigLogoURL(path) {
+	return `${bigLogoBaseURL}${path}`;
 }
 
 function toggleFiltersSidebar() {
@@ -65,6 +70,12 @@ async function getGenres() {
 async function getAllProviders() {
 	const res = await fetch(providerListURL, tmdbOptions);
 	return (await res.json()).results;
+};
+
+async function getMovieProviders(movieId) {
+	const url = `${apiBaseURL}/movie/${movieId}/watch/providers`;
+	const res = await fetch(url, tmdbOptions);
+	return (await res.json()).results.US;
 };
 
 async function getMovies(args) {
@@ -164,6 +175,24 @@ async function displayMovie() {
 	$('.movie-genre').click(function() {
 		$(`#genre-selector input[type="checkbox"][value="${$(this).attr('data-genre-id')}"]`).click();
 	});
+	const providers = await getMovieProviders(movie.id);
+	const providersEl = $('#movie-providers');
+	providersEl.html('');
+	for(const [name, type] of [['Stream', 'flatrate'], ['Rent', 'rent'], ['Buy', 'buy']]) {
+		if(providers[type] !== undefined && providers[type].length > 0) {
+			providersEl.append(`<p>${name}</p>`);
+			const logos = providers[type].map(provider =>
+				`<img
+					class="big_logo"
+					src="${makeBigLogoURL(provider.logo_path)}"
+					alt="${provider.provider_name}"
+					title="${provider.provider_name}"
+				>`
+			).join('');
+			console.log(logos);
+			const list = providersEl.append(`<a href="${providers.link}">${logos}</a>`);
+		}
+	}
 }
 
 async function main() {
