@@ -210,8 +210,10 @@ async function main() {
 		$('#provider-selector').append(
 			`<li>
 				<input type="checkbox" id="$provider-${item.provider_id}" value="${item.provider_id}">
-				<img class="logo" src="${makeLogoURL(item.logo_path)}"/>
-				<label for="$provider-${item.provider_id}">${item.provider_name}</label>
+				<label for="$provider-${item.provider_id}">
+					<img class="logo" src="${makeLogoURL(item.logo_path)}"/>
+					${item.provider_name}
+				</label>
 			</li>`
 		);
 	});
