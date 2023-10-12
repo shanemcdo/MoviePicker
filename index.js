@@ -183,7 +183,7 @@ async function displayMovie() {
 			providersEl.append(`<p>${name}</p>`);
 			const logos = providers[type].map(provider =>
 				`<img
-					class="big_logo"
+					class="big_logo logo"
 					src="${makeBigLogoURL(provider.logo_path)}"
 					alt="${provider.provider_name}"
 					title="${provider.provider_name}"
