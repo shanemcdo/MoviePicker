@@ -62,7 +62,7 @@ async function getGenres() {
 	return (await res.json()).genres;
 };
 
-async function getProviders() {
+async function getAllProviders() {
 	const res = await fetch(providerListURL, tmdbOptions);
 	return (await res.json()).results;
 };
@@ -205,7 +205,7 @@ async function main() {
 			}
 		}
 	});
-	allProviders = await getProviders();
+	allProviders = await getAllProviders();
 	allProviders.forEach(item => {
 		$('#provider-selector').append(
 			`<li>
