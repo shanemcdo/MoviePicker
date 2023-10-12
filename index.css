@@ -162,6 +162,16 @@ body {
 	cursor: pointer;
 }
 
+.exclude-button {
+	color: red;
+	font-weight: bold;
+	display: none;
+}
+
+li:has(.exclude-button):hover > .exclude-button {
+	display: inline;
+}
+
 .pair * {
 	display: inline;
 	margin: 0;
@@ -199,7 +209,7 @@ body {
 	}
 
 	#movie-info-wrapper {
-		margin-left: 0;
+		margin-left: 0e
 	}
 
 	#movie-info {

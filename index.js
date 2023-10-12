@@ -208,8 +208,14 @@ async function main() {
 		$('#genre-selector').append(
 			`<li>
 				<input type="checkbox" value="${item.id}" id="genre-${item.id}">
-				<input type="button" value="X" data-genre-id='${item.id}' title="Exclude ${item.name} Genre ">
 				<label for="genre-${item.id}">${item.name}</label>
+				<input
+					type="button"
+					value="X"
+					data-genre-id='${item.id}'
+					title="Exclude ${item.name} Genre"
+					class="borderless-button exclude-button"
+				>
 			</li>`
 		);
 	});
