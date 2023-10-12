@@ -27,6 +27,10 @@ body {
 	flex-direction: column;
 }
 
+label {
+	cursor: pointer;
+}
+
 #banner {
 	background: var(--bg-accent);
 	padding: 0.3rem;
