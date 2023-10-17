@@ -63,7 +63,7 @@ function toggleFiltersSidebar() {
 function getGenre(id) {
 	for(const genre of allGenres) {
 		if(id == genre.id)
-			return genre.name
+			return genre.name;
 	};
 	return name;
 };
@@ -158,7 +158,7 @@ async function displayError() {
 };
 
 async function displayMovie() {
-	$('#error-message').html('Loading...')
+	$('#error-message').html('Loading...');
 	const movie = await getMovie();
 	if(movie === null) {
 		displayError();
@@ -173,7 +173,7 @@ async function displayMovie() {
 	$('#movie-rating').text(`${movie.vote_average}/10`);
 	$('#movie-desc').text(movie.overview);
 	$('body').css('background-image', `linear-gradient(var(--bg-transparent), var(--bg-transparent)), url(${makeImageURL(movie.backdrop_path)})`);
-	$('#movie-genres').html('')
+	$('#movie-genres').html('');
 	for(const id of movie.genre_ids) {
 		$('#movie-genres').append(
 			`<span class="movie-genre" data-genre-id="${id}">${getGenre(id)}</span>`
@@ -222,8 +222,8 @@ async function main() {
 	$('#genre-selector input[type="button"]').click(function() {
 		const el = $(this);
 		const id = el.attr('data-genre-id');
-		const parent = el.parent()
-		const label = $('label', parent)
+		const parent = el.parent();
+		const label = $('label', parent);
 		if(excludedGenres.has(id)) {
 			excludedGenres.delete(id);
 			label.css('text-decoration', '');
