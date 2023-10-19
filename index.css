@@ -31,6 +31,23 @@ label {
 	cursor: pointer;
 }
 
+input[type="checkbox"] {
+	-webkit-appearance: none;
+	appearance: none;
+	background: none;
+	margin: 0;
+}
+
+input[type="checkbox"]::before {
+	content: "✓";
+	color: #333;
+	font-size: 1.1rem;
+}
+
+input[type="checkbox"]:checked::before {
+	color: green;
+}
+
 #banner {
 	background: var(--bg-accent);
 	padding: 0.3rem;
