@@ -245,7 +245,7 @@ li:has(.exclude-button):hover > .exclude-button {
 
 	body {
 		background-image: unset !important;
-		overflow: inherit;
+		overflow-y: inherit;
 	}
 
 	#wrapper {
@@ -266,7 +266,7 @@ li:has(.exclude-button):hover > .exclude-button {
 		position: fixed;
 		left: -90vw;
 		transition: left 0.2s;
-		overflow: auto;
+		overflow-y: auto;
 		height: 100%;
 	}
 
