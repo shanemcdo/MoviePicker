@@ -114,12 +114,16 @@ async function getMovie() {
 			'without_genres': [...excludedGenres].join(','),
 			'with_watch_providers': [...selectedProviders].join('|'),
 			'with_watch_monetization_types': [...selectedMonetizationTypes].join('|'),
+			'vote_average.gte': $('#min-slider').val(),
+			'vote_average.lte': $('#max-slider').val(),
 			'page': currentPage
 		};
 		if(
 			args.with_genres !== previousFilters.with_genres
 			|| args.without_genres !== previousFilters.without_genres
 			|| args.with_providers !== previousFilters.with_providers
+			|| args['vote_average.gte'] !== previousFilters['vote_average.gte']
+			|| args['vote_average.lte'] !== previousFilters['vote_average.lte']
 		) {
 			args.page = currentPage = 1;
 		}
@@ -300,6 +304,10 @@ async function main() {
 				$(this).hide();
 			}
 		});
+	});
+	$('.range-slider').on('input', function() {
+		const el = $(this);
+		$(`#${el.attr('data-value-el')}`).text(el.val());
 	});
 	await displayMovie();
 };

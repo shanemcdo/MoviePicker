@@ -27,7 +27,7 @@ body {
 	flex-direction: column;
 }
 
-label {
+.selector-list label {
 	cursor: pointer;
 }
 
@@ -73,6 +73,13 @@ input[type="checkbox"]:checked::before {
 
 #filters > * {
 	margin-left: 1rem;
+}
+
+#rating-slider-wrapper {
+	display: grid;
+	grid-template-columns: 1fr 5fr 1fr;
+	align-items: center;
+	text-align: center;
 }
 
 #credit {
