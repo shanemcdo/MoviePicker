@@ -187,19 +187,21 @@ async function displayMovie() {
 	const providers = await getMovieProviders(movie.id);
 	const providersEl = $('#movie-providers');
 	providersEl.html('');
-	for(const type in monetizationTypes) {
-		const name = monetizationTypes[type];
-		if(providers[type] !== undefined && providers[type].length > 0) {
-			providersEl.append(`<h4 class="monetization-header"><b>${name}</b></h4>`);
-			const logos = providers[type].map(provider =>
-				`<img
-					class="big_logo logo"
-					src="${makeBigLogoURL(provider.logo_path)}"
-					alt="${provider.provider_name}"
-					title="${provider.provider_name}"
-				>`
-			).join('');
-			const list = providersEl.append(`<a href="${providers.link}">${logos}</a>`);
+	if(providers !== undefined) {
+		for(const type in monetizationTypes) {
+			const name = monetizationTypes[type];
+			if(providers[type] !== undefined && providers[type].length > 0) {
+				providersEl.append(`<h4 class="monetization-header"><b>${name}</b></h4>`);
+				const logos = providers[type].map(provider =>
+					`<img
+						class="big_logo logo"
+						src="${makeBigLogoURL(provider.logo_path)}"
+						alt="${provider.provider_name}"
+						title="${provider.provider_name}"
+					>`
+				).join('');
+				const list = providersEl.append(`<a href="${providers.link}">${logos}</a>`);
+			}
 		}
 	}
 }
