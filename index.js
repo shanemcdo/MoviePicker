@@ -74,8 +74,9 @@ function clearFilters() {
 
 function getGenre(id) {
 	for(const genre of allGenres) {
-		if(id == genre.id)
+		if(id == genre.id) {
 			return genre.name;
+		}
 	};
 	return name;
 };
