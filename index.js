@@ -2,6 +2,7 @@ const apiBaseURL = 'https://api.themoviedb.org/3';
 const discoverMovieBaseURL = `${apiBaseURL}/discover/movie`;
 const genreListURL = `${apiBaseURL}/genre/movie/list`;
 const providerListURL = `${apiBaseURL}/watch/providers/movie`;
+const regionListURL = `${apiBaseURL}/watch/providers/regions`;
 const imageBaseURL = 'https://image.tmdb.org/t/p';
 const posterBaseURL = `${imageBaseURL}/original`;
 const logoBaseURL = `${imageBaseURL}/w45`;
@@ -27,6 +28,14 @@ let currentPage = 1;
 let previousFilters = {};
 let allGenres = [];
 let allProviders = [];
+let allRegions = [];
+const defaults = {
+	rating: {
+		min: parseInt($('#min-slider').prop('min')),
+		max: parseInt($('#min-slider').prop('max')),
+	},
+	region: 'US',
+};
 
 function random(array) {
 	return array[Math.floor(Math.random() * array.length)];
@@ -63,8 +72,8 @@ function toggleFiltersSidebar() {
 function clearFilters() {
 	$('#filters input[type="checkbox"]').prop('checked', false);
 	$('#filters label').css('text-decoration', '');
-	$('#min-slider').val(0);
-	$('#max-slider').val(10);
+	$('#min-slider').val(defaults.rating.min);
+	$('#max-slider').val(defaults.rating.max);
 	$('.range-slider').trigger('input');
 	selectedMonetizationTypes.clear();
 	selectedGenres.clear();
@@ -100,6 +109,11 @@ async function getAllProviders() {
 	return (await res.json()).results;
 };
 
+async function getRegions() {
+	const res = await fetch(regionListURL, tmdbOptions);
+	return (await res.json()).results;
+};
+
 async function getMovieProviders(movieId) {
 	const url = `${apiBaseURL}/movie/${movieId}/watch/providers`;
 	const res = await fetch(url, tmdbOptions);
@@ -125,7 +139,7 @@ async function getMovies(args) {
 async function getMovie() {
 	while(1){
 		const args = {
-			'watch_region': 'US',
+			'watch_region': $('#regions').val(),
 			'certification_country': 'US',
 			'certification.gte': 'G',
 			'certification.lte': 'PG-13',
@@ -143,6 +157,7 @@ async function getMovie() {
 			|| args.with_providers !== previousFilters.with_providers
 			|| args['vote_average.gte'] !== previousFilters['vote_average.gte']
 			|| args['vote_average.lte'] !== previousFilters['vote_average.lte']
+			|| args['watch_region'] !== previousFilters['watch_region']
 		) {
 			args.page = currentPage = 1;
 		}
@@ -193,7 +208,7 @@ async function displayMovie() {
 	$('#movie-poster').attr('src', makeImageURL(movie.poster_path));
 	$('.movie-title').text(movie.title);
 	$('#movie-date').text(movie.release_date);
-	$('#movie-rating').text(`${movie.vote_average}/10`);
+	$('#movie-rating').text(`${movie.vote_average}/${defaults.rating.max}`);
 	$('#movie-desc').text(movie.overview);
 	$('body').css('background-image', `linear-gradient(var(--bg-transparent), var(--bg-transparent)), url(${makeImageURL(movie.backdrop_path)})`);
 	$('#movie-genres').html('');
@@ -337,6 +352,13 @@ async function main() {
 			other.trigger('input');
 		}
 	});
+	allRegions = await getRegions();
+	$('#regions').append(
+		allRegions.map(region => 
+			`<option value="${region.iso_3166_1}">${region.english_name}</option>`
+		).join('')
+	);
+	$('#regions').val(defaults.region);
 	await displayMovie();
 };
 
