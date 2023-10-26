@@ -85,15 +85,13 @@ async function getMovieProviders(movieId) {
 };
 
 async function getMovies(args) {
-	let query = '';
+	let url = new URL(discoverMovieBaseURL);
 	for(const arg in args) {
 		if(!args[arg]) continue;
-		if(query) {
-			query += '&';
-		}
-		query += `${arg}=${args[arg]}`;
-	};
-	const url = discoverMovieBaseURL + '?' + query;
+		url.searchParams.set(arg, args[arg]);
+	}
+	url = url.toString();
+	console.log(url);
 	try {
 		const res = await fetch(url, tmdbOptions);
 		const json = await res.json();
