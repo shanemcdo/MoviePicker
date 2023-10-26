@@ -91,7 +91,6 @@ async function getMovies(args) {
 		url.searchParams.set(arg, args[arg]);
 	}
 	url = url.toString();
-	console.log(url);
 	try {
 		const res = await fetch(url, tmdbOptions);
 		const json = await res.json();
