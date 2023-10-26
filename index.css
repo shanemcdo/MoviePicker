@@ -97,20 +97,25 @@ input[type="checkbox"]:checked::before {
 	display: inline;
 }
 
-#clear-filters-button {
+.normal-button {
 	background: var(--bg-accent);
 	color: var(--fg);
-	width: 60%;
-	padding: 0.2rem;
-	margin-top: 0.2rem;
+	padding: 0.4rem;
 	cursor: pointer;
-	border: solid var(--fg) 1px;
 	border-radius: 0.5rem;
 	font-size: 1em;
+	border: none;
 }
 
-#clear-filters-button:active {
+.normal-button:active {
 	background: var(--bg);
+}
+
+#clear-filters-button {
+	width: 60%;
+	border: solid var(--fg) 1px;
+	margin-top: 0.2rem;
+	padding: 0.2rem;
 }
 
 #website-title {

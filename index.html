@@ -44,7 +44,7 @@
 						<span id="max-rating">10</span>
 					</div>
 				</details>
-				<button id="clear-filters-button" onclick="clearFilters();">Clear Filters</button>
+				<button id="clear-filters-button" class="normal-button" onclick="clearFilters();">Clear Filters</button>
 				<div class="flex-spacer"></div>
 				<div id="credit">
 					<img src="assets/tmdb.png" alt=""/>
@@ -66,6 +66,7 @@
 						<div id="movie-genres"></div>
 						<p id="movie-desc"></p>
 						<div id="movie-providers"></div>
+						<button class="normal-button" onclick="getMoreLikeThis();" title="Find another movie with the same genres">More Like This</button>
 					</div>
 				</div>
 				<div id="error-info">

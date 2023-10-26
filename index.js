@@ -80,6 +80,15 @@ function getGenre(id) {
 	return name;
 };
 
+function getMoreLikeThis() {
+	selectedGenres.clear();
+	$('#genre-selector input[type="checkbox"]').prop('checked', false);
+	$('.movie-genre').each(function() {
+		$(this).click();
+	});
+	displayMovie();
+}
+
 async function getGenres() {
 	const res = await fetch(genreListURL, tmdbOptions);
 	return (await res.json()).genres;
