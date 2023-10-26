@@ -60,6 +60,18 @@ function toggleFiltersSidebar() {
 	}
 }
 
+function clearFilters() {
+	$('#filters input[type="checkbox"]').prop('checked', false);
+	$('#filters label').css('text-decoration', '');
+	$('#min-slider').val(0);
+	$('#max-slider').val(10);
+	$('.range-slider').trigger('input');
+	selectedMonetizationTypes.clear();
+	selectedGenres.clear();
+	excludedGenres.clear();
+	selectedProviders.clear();
+}
+
 function getGenre(id) {
 	for(const genre of allGenres) {
 		if(id == genre.id)

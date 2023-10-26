@@ -97,6 +97,22 @@ input[type="checkbox"]:checked::before {
 	display: inline;
 }
 
+#clear-filters-button {
+	background: var(--bg-accent);
+	color: var(--fg);
+	width: 60%;
+	padding: 0.2rem;
+	margin-top: 0.2rem;
+	cursor: pointer;
+	border: solid var(--fg) 1px;
+	border-radius: 0.5rem;
+	font-size: 1em;
+}
+
+#clear-filters-button:active {
+	background: var(--bg);
+}
+
 #website-title {
 	display: inline;
 	font-size: 1.3rem;
