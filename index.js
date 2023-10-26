@@ -306,6 +306,13 @@ async function main() {
 	$('.range-slider').on('input', function() {
 		const el = $(this);
 		$(`#${el.attr('data-value-el')}`).text(el.val());
+		const min = $('#min-slider');
+		const max = $('#max-slider');
+		const other = el[0].id === 'min-slider' ? max : min;
+		if(parseFloat(min.val()) > parseFloat(max.val())) {
+			other.val(el.val())
+			other.trigger('input');
+		}
 	});
 	await displayMovie();
 };
