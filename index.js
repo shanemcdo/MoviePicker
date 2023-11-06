@@ -86,9 +86,9 @@ function getGenre(id) {
 		if(id == genre.id) {
 			return genre.name;
 		}
-	};
+	}
 	return name;
-};
+}
 
 function getMoreLikeThis() {
 	selectedGenres.clear();
@@ -102,23 +102,23 @@ function getMoreLikeThis() {
 async function getGenres() {
 	const res = await fetch(genreListURL, tmdbOptions);
 	return (await res.json()).genres;
-};
+}
 
 async function getAllProviders() {
 	const res = await fetch(providerListURL, tmdbOptions);
 	return (await res.json()).results;
-};
+}
 
 async function getRegions() {
 	const res = await fetch(regionListURL, tmdbOptions);
 	return (await res.json()).results;
-};
+}
 
 async function getMovieProviders(movieId) {
 	const url = `${apiBaseURL}/movie/${movieId}/watch/providers`;
 	const res = await fetch(url, tmdbOptions);
 	return (await res.json()).results.US;
-};
+}
 
 async function getMovies(args) {
 	let url = new URL(discoverMovieBaseURL);
@@ -134,7 +134,7 @@ async function getMovies(args) {
 	} catch (e) {
 		return null;
 	}
-};
+}
 
 async function getMovie() {
 	while(1){
@@ -186,14 +186,14 @@ async function getMovie() {
 		}
 		currentPage += 1;
 	}
-};
+}
 
 async function displayError() {
 	$('#movie-info').hide();
 	// get rid of background from movie
 	$('body').css('background-image', '');
 	$('#error-info').show();
-};
+}
 
 async function displayMovie() {
 	$('#error-message').html('Loading...');
@@ -216,7 +216,7 @@ async function displayMovie() {
 		$('#movie-genres').append(
 			`<span class="movie-genre" data-genre-id="${id}">${getGenre(id)}</span>`
 		);
-	};
+	}
 	$('.movie-genre').click(function() {
 		$(`#genre-selector input[type="checkbox"][value="${$(this).attr('data-genre-id')}"]`).click();
 	});
@@ -315,7 +315,7 @@ async function main() {
 				<label for="monetization-${type}">${name}</label>
 			</li>`
 		);
-	};
+	}
 	$('#monetization-selector input[type="checkbox"]').click(function() {
 		const type = $(this).val();
 		if(selectedMonetizationTypes.has(type)) {
@@ -360,6 +360,6 @@ async function main() {
 	);
 	$('#regions').val(defaults.region);
 	await displayMovie();
-};
+}
 
 main();
