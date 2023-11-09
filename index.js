@@ -208,7 +208,7 @@ async function displayMovie() {
 	$('#movie-poster').attr('src', makeImageURL(movie.poster_path));
 	$('.movie-title').text(movie.title);
 	$('#movie-date').text(movie.release_date);
-	$('#movie-rating').text(`${movie.vote_average}/${defaults.rating.max}`);
+	$('#movie-rating').text(`${parseFloat(movie.vote_average).toFixed(1)}/${defaults.rating.max}`);
 	$('#movie-desc').text(movie.overview);
 	$('body').css('background-image', `linear-gradient(var(--bg-transparent), var(--bg-transparent)), url(${makeImageURL(movie.backdrop_path)})`);
 	$('#movie-genres').html('');
@@ -343,7 +343,7 @@ async function main() {
 	});
 	$('.range-slider').on('input', function() {
 		const el = $(this);
-		$(`#${el.attr('data-value-el')}`).text(el.val());
+		$(`#${el.attr('data-value-el')}`).text(parseFloat(el.val()).toFixed(1));
 		const min = $('#min-slider');
 		const max = $('#max-slider');
 		const other = el[0].id === 'min-slider' ? max : min;
