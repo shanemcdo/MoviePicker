@@ -423,9 +423,11 @@ async function main() {
 	$('#media-type-switch').on('change', async function() {
 		mediaTypeIsMovie = !$(this).prop('checked');
 		if(mediaTypeIsMovie) {
+			$('#media-type').text('Movie');
 			loadGenres(allMovieGenres);
 			loadProviders(allMovieProviders);
 		} else {
+			$('#media-type').text('TV');
 			if(allTvGenres.length === 0) {
 				allTvGenres = await getTvGenres();
 			}
