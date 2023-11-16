@@ -390,6 +390,35 @@ function loadProviders(providers) {
 	});
 }
 
+function loadMonitizationTypes() {
+	for(const type in monetizationTypes) {
+		const name = monetizationTypes[type];
+		$('#monetization-selector').append(
+			`<li>
+				<input type="checkbox" id="monetization-${type}" value="${type}">
+				<label for="monetization-${type}">${name}</label>
+			</li>`
+		);
+	}
+	$('#monetization-selector input[type="checkbox"]').click(function() {
+		const type = $(this).val();
+		if(selectedMonetizationTypes.has(type)) {
+			selectedMonetizationTypes.delete(type);
+		} else {
+			selectedMonetizationTypes.add(type);
+		}
+	});
+}
+
+function loadRegions() {
+	$('#regions').append(
+		allRegions.map(region => 
+			`<option value="${region.iso_3166_1}">${region.english_name}</option>`
+		).join('')
+	);
+	$('#regions').val(defaults.region);
+}
+
 async function main() {
 	$('#media-type-switch').on('change', async function() {
 		mediaTypeIsMovie = !$(this).prop('checked');
@@ -412,23 +441,7 @@ async function main() {
 	loadGenres(allMovieGenres);
 	allMovieProviders = await getAllMovieProviders();
 	loadProviders(allMovieProviders);
-	for(const type in monetizationTypes) {
-		const name = monetizationTypes[type];
-		$('#monetization-selector').append(
-			`<li>
-				<input type="checkbox" id="monetization-${type}" value="${type}">
-				<label for="monetization-${type}">${name}</label>
-			</li>`
-		);
-	}
-	$('#monetization-selector input[type="checkbox"]').click(function() {
-		const type = $(this).val();
-		if(selectedMonetizationTypes.has(type)) {
-			selectedMonetizationTypes.delete(type);
-		} else {
-			selectedMonetizationTypes.add(type);
-		}
-	});
+	loadMonitizationTypes();
 	$('.selector-search').on('input', function() {
 		const el = $(this);
 		const value = el.val().toLowerCase();
@@ -458,12 +471,7 @@ async function main() {
 		}
 	});
 	allRegions = await getRegions();
-	$('#regions').append(
-		allRegions.map(region => 
-			`<option value="${region.iso_3166_1}">${region.english_name}</option>`
-		).join('')
-	);
-	$('#regions').val(defaults.region);
+	loadRegions();
 	await displayMovieOrTv();
 }
 
