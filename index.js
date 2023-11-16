@@ -253,15 +253,24 @@ async function getMovieOrTv() {
 	}
 }
 
-async function displayError() {
+function displayError() {
 	$('#movie-info').hide();
 	// get rid of background from movie
 	$('body').css('background-image', '');
 	$('#error-info').show();
 }
 
-async function displayMovieOrTv() {
+function clearError() {
 	$('#error-message').html('Loading...');
+}
+
+function displayLoading() {
+	clearError();
+	displayError();
+};
+
+async function displayMovieOrTv() {
+	clearError();
 	const media = await getMovieOrTv();
 	console.log(media);
 	if(media === null) {
@@ -421,6 +430,13 @@ function loadRegions() {
 
 async function main() {
 	$('#media-type-switch').on('change', async function() {
+		let completed = false;
+		// show loading if it takes more than 100 ms
+		setTimeout(() => {
+			if(!completed) {
+				displayLoading();
+			}
+		}, 100);
 		mediaTypeIsMovie = !$(this).prop('checked');
 		if(mediaTypeIsMovie) {
 			$('#media-type').text('Movie');
@@ -437,7 +453,8 @@ async function main() {
 			loadGenres(allTvGenres);
 			loadProviders(allTvProviders);
 		}
-		displayMovieOrTv();
+		await displayMovieOrTv();
+		completed = true;
 	});
 	allMovieGenres = await getMovieGenres();
 	loadGenres(allMovieGenres);
