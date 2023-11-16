@@ -1,7 +1,10 @@
 const apiBaseURL = 'https://api.themoviedb.org/3';
 const discoverMovieBaseURL = `${apiBaseURL}/discover/movie`;
-const genreListURL = `${apiBaseURL}/genre/movie/list`;
-const providerListURL = `${apiBaseURL}/watch/providers/movie`;
+const discoverTvBaseURL = `${apiBaseURL}/discover/tv`;
+const movieGenreListURL = `${apiBaseURL}/genre/movie/list`;
+const tvGenreListURL = `${apiBaseURL}/genre/tv/list`;
+const movieProviderListURL = `${apiBaseURL}/watch/providers/movie`;
+const tvProviderListURL = `${apiBaseURL}/watch/providers/tv`;
 const regionListURL = `${apiBaseURL}/watch/providers/regions`;
 const imageBaseURL = 'https://image.tmdb.org/t/p';
 const posterBaseURL = `${imageBaseURL}/original`;
@@ -20,14 +23,22 @@ const monetizationTypes = {
 	rent: 'Rent',
 };
 const selectedMonetizationTypes = new Set();
-const selectedGenres = new Set();
-const excludedGenres = new Set();
-const selectedProviders = new Set();
+const selectedMovieGenres = new Set();
+const selectedTvGenres = new Set();
+const excludedMovieGenres = new Set();
+const excludedTvGenres = new Set();
+const selectedMovieProviders = new Set();
+const selectedTvProviders = new Set();
 const seenMovies = new Set();
-let currentPage = 1;
-let previousFilters = {};
-let allGenres = [];
-let allProviders = [];
+const seenTvs = new Set();
+let currentMoviePage = 1;
+let currentTvPage = 1;
+let previousMovieFilters = {};
+let previousTvFilters = {};
+let allMovieGenres = [];
+let allTvGenres = [];
+let allMovieProviders = [];
+let allTvProviders = [];
 let allRegions = [];
 const defaults = {
 	rating: {
@@ -36,6 +47,7 @@ const defaults = {
 	},
 	region: 'US',
 };
+let mediaTypeIsMovie = true;
 
 function random(array) {
 	return array[Math.floor(Math.random() * array.length)];
@@ -76,13 +88,13 @@ function clearFilters() {
 	$('#max-slider').val(defaults.rating.max);
 	$('.range-slider').trigger('input');
 	selectedMonetizationTypes.clear();
-	selectedGenres.clear();
-	excludedGenres.clear();
-	selectedProviders.clear();
+	selectedMovieGenres.clear();
+	excludedMovieGenres.clear();
+	selectedMovieProviders.clear();
 }
 
-function getGenre(id) {
-	for(const genre of allGenres) {
+function getGenre(id, genres) {
+	for(const genre of genres) {
 		if(id == genre.id) {
 			return genre.name;
 		}
@@ -90,22 +102,40 @@ function getGenre(id) {
 	return name;
 }
 
+function getMovieGenre(id) {
+	return getGenre(id, allMovieGenres);
+}
+
+function getTvGenre(id) {
+	return getGenre(id, allTvGenres);
+}
+
 function getMoreLikeThis() {
-	selectedGenres.clear();
+	selectedMovieGenres.clear();
 	$('#genre-selector input[type="checkbox"]').prop('checked', false);
 	$('.movie-genre').each(function() {
 		$(this).click();
 	});
-	displayMovie();
+	displayMovieOrTv();
 }
 
-async function getGenres() {
-	const res = await fetch(genreListURL, tmdbOptions);
+async function getMovieGenres() {
+	const res = await fetch(movieGenreListURL, tmdbOptions);
 	return (await res.json()).genres;
 }
 
-async function getAllProviders() {
-	const res = await fetch(providerListURL, tmdbOptions);
+async function getTvGenres() {
+	const res = await fetch(tvGenreListURL, tmdbOptions);
+	return (await res.json()).genres;
+}
+
+async function getAllMovieProviders() {
+	const res = await fetch(movieProviderListURL, tmdbOptions);
+	return (await res.json()).results;
+}
+
+async function getAllTvProviders() {
+	const res = await fetch(tvProviderListURL, tmdbOptions);
 	return (await res.json()).results;
 }
 
@@ -120,8 +150,14 @@ async function getMovieProviders(movieId) {
 	return (await res.json()).results.US;
 }
 
-async function getMovies(args) {
-	let url = new URL(discoverMovieBaseURL);
+async function getTvProviders(tvId) {
+	const url = `${apiBaseURL}/tv/${tvId}/watch/providers`;
+	const res = await fetch(url, tmdbOptions);
+	return (await res.json()).results.US;
+}
+
+async function getMedia(args, baseURL) {
+	let url = new URL(baseURL);
 	for(const arg in args) {
 		if(!args[arg]) continue;
 		url.searchParams.set(arg, args[arg]);
@@ -136,7 +172,22 @@ async function getMovies(args) {
 	}
 }
 
-async function getMovie() {
+async function getMovies(args) {
+	return getMedia(args, discoverMovieBaseURL);
+}
+
+async function getTvs(args) {
+	return getMedia(args, discoverTvBaseURL);
+}
+
+async function getMovieOrTv() {
+	let selectedGenres    = mediaTypeIsMovie ? selectedMovieGenres    : selectedTvGenres;
+	let excludedGenres    = mediaTypeIsMovie ? excludedMovieGenres    : excludedTvGenres;
+	let selectedProviders = mediaTypeIsMovie ? selectedMovieProviders : selectedTvProviders;
+	let currentPage       = mediaTypeIsMovie ? currentMoviePage       : currentTvPage;
+	let previousFilters   = mediaTypeIsMovie ? previousMovieFilters   : previousTvFilters;
+	let getMediaList      = mediaTypeIsMovie ? getMovies              : getTvs;
+	let seenMedia         = mediaTypeIsMovie ? seenMovies             : seenTvs
 	while(1){
 		const args = {
 			'watch_region': $('#regions').val(),
@@ -160,31 +211,45 @@ async function getMovie() {
 			|| args['watch_region'] !== previousFilters['watch_region']
 		) {
 			args.page = currentPage = 1;
+			if(mediaTypeIsMovie) {
+				currentMoviePage = 1;
+			} else {
+				currentTvPage = 1;
+			}
 		}
-		previousFilters = args;
-		const movies = await getMovies(args);
-		if(movies === null) {
+		if(mediaTypeIsMovie) {
+			previousMovieFilters = args;
+		} else {
+			previousTvFilters = args;
+		}
+		const media = await getMediaList(args);
+		const mediaType = mediaTypeIsMovie ? 'movie' : 'shows';
+		if(media === null) {
 			$('#error-message').html('Could not connect to API');
 			return null;
 		}
-		if(movies.results === undefined) {
-
-			$('#error-message').html(`API returned message: ${movies.status_message}`);
+		if(media.results === undefined) {
+			$('#error-message').html(`API returned message: ${media.status_message}`);
 			return null;
 		}
-		if(movies.total_pages < 1) {
-			$('#error-message').html('No movies found with selected filters');
+		if(media.total_pages < 1) {
+			$('#error-message').html(`No ${mediaType} found with selected filters`);
 			return null;
 		}
-		if(movies.total_pages < currentPage) {
-			$('#error-message').html('No more movies remaining');
+		if(media.total_pages < currentPage) {
+			$('#error-message').html(`No more ${mediaType} remaining`);
 			return null;
 		}
-		const filteredArray = movies.results.filter(movie => !seenMovies.has(movie.id));
+		const filteredArray = media.results.filter(item => !seenMedia.has(item.id));
 		if(filteredArray.length > 0) {
 			return random(filteredArray);
 		}
 		currentPage += 1;
+		if(mediaTypeIsMovie) {
+			currentMoviePage = currentPage;
+		} else {
+			currentTvPage = currentPage;
+		}
 	}
 }
 
@@ -195,24 +260,32 @@ async function displayError() {
 	$('#error-info').show();
 }
 
-async function displayMovie() {
+async function displayMovieOrTv() {
 	$('#error-message').html('Loading...');
-	const movie = await getMovie();
-	if(movie === null) {
+	const media = await getMovieOrTv();
+	console.log(media);
+	if(media === null) {
 		displayError();
 		return;
 	}
+	const selectedGenres    = mediaTypeIsMovie ? selectedMovieGenres    : selectedTvGenres;
+	const excludedGenres    = mediaTypeIsMovie ? excludedMovieGenres    : excludedTvGenres;
+	const selectedProviders = mediaTypeIsMovie ? selectedMovieProviders : selectedTvProviders;
+	const previousFilters   = mediaTypeIsMovie ? previousMovieFilters   : previousTvFilters;
+	const seenMedia         = mediaTypeIsMovie ? seenMovies             : seenTvs
+	const getMediaProviders = mediaTypeIsMovie ? getMovieProviders      : getTvProviders;
+	const getGenre          = mediaTypeIsMovie ? getMovieGenre          : getTvGenre;
 	$('#error-info').hide();
 	$('#movie-info').show();
-	seenMovies.add(movie.id);
-	$('#movie-poster').attr('src', makeImageURL(movie.poster_path));
-	$('.movie-title').text(movie.title);
-	$('#movie-date').text(movie.release_date);
-	$('#movie-rating').text(`${parseFloat(movie.vote_average).toFixed(1)}/${defaults.rating.max}`);
-	$('#movie-desc').text(movie.overview);
-	$('body').css('background-image', `linear-gradient(var(--bg-transparent), var(--bg-transparent)), url(${makeImageURL(movie.backdrop_path)})`);
+	seenMedia.add(media.id);
+	$('#movie-poster').attr('src', makeImageURL(media.poster_path));
+	$('.movie-title').text(media[mediaTypeIsMovie ? 'title' : 'name']);
+	$('#movie-date').text(media[mediaTypeIsMovie ? 'release_date' : 'first_air_date']);
+	$('#movie-rating').text(`${parseFloat(media.vote_average).toFixed(1)}/${defaults.rating.max}`);
+	$('#movie-desc').text(media.overview);
+	$('body').css('background-image', `linear-gradient(var(--bg-transparent), var(--bg-transparent)), url(${makeImageURL(media.backdrop_path)})`);
 	$('#movie-genres').html('');
-	for(const id of movie.genre_ids) {
+	for(const id of media.genre_ids) {
 		$('#movie-genres').append(
 			`<span class="movie-genre" data-genre-id="${id}">${getGenre(id)}</span>`
 		);
@@ -220,7 +293,8 @@ async function displayMovie() {
 	$('.movie-genre').click(function() {
 		$(`#genre-selector input[type="checkbox"][value="${$(this).attr('data-genre-id')}"]`).click();
 	});
-	const providers = await getMovieProviders(movie.id);
+	const providers = await getMediaProviders(media.id);
+	console.log(providers);
 	const providersEl = $('#movie-providers');
 	providersEl.html('');
 	if(providers !== undefined) {
@@ -242,13 +316,16 @@ async function displayMovie() {
 	}
 }
 
-async function main() {
-	allGenres = await getGenres();
-	allGenres.forEach(item => {
+function loadGenres(genres) {
+	const selectedGenres = mediaTypeIsMovie ? selectedMovieGenres : selectedTvGenres;
+	const excludedGenres = mediaTypeIsMovie ? excludedMovieGenres : excludedTvGenres;
+	$('#genre-selector').html('');
+	genres.forEach(item => {
+		console.log(item.id, excludedGenres.has(item.id.toString()) ? 'style="text-decoration: strike-through;"' : '');
 		$('#genre-selector').append(
 			`<li>
-				<input type="checkbox" value="${item.id}" id="genre-${item.id}">
-				<label for="genre-${item.id}">${item.name}</label>
+				<input type="checkbox" value="${item.id}" id="genre-${item.id}" ${selectedGenres.has(item.id.toString()) ? 'checked' : ''}>
+				<label for="genre-${item.id}" ${excludedGenres.has(item.id.toString()) ? 'style="text-decoration: line-through;"' : ''}>${item.name}</label>
 				<input
 					type="button"
 					value="X"
@@ -287,11 +364,15 @@ async function main() {
 			}
 		}
 	});
-	allProviders = await getAllProviders();
-	allProviders.forEach(item => {
+}
+
+function loadProviders(providers) {
+	const selectedProviders = mediaTypeIsMovie ? selectedMovieProviders : selectedTvProviders;
+	$('#provider-selector').html('');
+	providers.forEach(item => {
 		$('#provider-selector').append(
 			`<li>
-				<input type="checkbox" id="$provider-${item.provider_id}" value="${item.provider_id}">
+				<input type="checkbox" id="$provider-${item.provider_id}" value="${item.provider_id}" ${selectedProviders.has(item.provider_id.toString()) ? 'checked' : ''}>
 				<label for="$provider-${item.provider_id}">
 					<img class="logo" src="${makeLogoURL(item.logo_path)}"/>
 					${item.provider_name}
@@ -307,6 +388,30 @@ async function main() {
 			selectedProviders.add(id);
 		}
 	});
+}
+
+async function main() {
+	$('#media-type-switch').on('change', async function() {
+		mediaTypeIsMovie = !$(this).prop('checked');
+		if(mediaTypeIsMovie) {
+			loadGenres(allMovieGenres);
+			loadProviders(allMovieProviders);
+		} else {
+			if(allTvGenres.length === 0) {
+				allTvGenres = await getTvGenres();
+			}
+			if(allTvProviders.length === 0) {
+				allTvProviders = await getAllTvProviders();
+			}
+			loadGenres(allTvGenres);
+			loadProviders(allTvProviders);
+		}
+		displayMovieOrTv();
+	});
+	allMovieGenres = await getMovieGenres();
+	loadGenres(allMovieGenres);
+	allMovieProviders = await getAllMovieProviders();
+	loadProviders(allMovieProviders);
 	for(const type in monetizationTypes) {
 		const name = monetizationTypes[type];
 		$('#monetization-selector').append(
@@ -359,7 +464,7 @@ async function main() {
 		).join('')
 	);
 	$('#regions').val(defaults.region);
-	await displayMovie();
+	await displayMovieOrTv();
 }
 
 main();
