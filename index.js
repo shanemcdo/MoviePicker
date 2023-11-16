@@ -372,8 +372,8 @@ function loadProviders(providers) {
 	providers.forEach(item => {
 		$('#provider-selector').append(
 			`<li>
-				<input type="checkbox" id="$provider-${item.provider_id}" value="${item.provider_id}" ${selectedProviders.has(item.provider_id.toString()) ? 'checked' : ''}>
-				<label for="$provider-${item.provider_id}">
+				<input type="checkbox" id="provider-${item.provider_id}" value="${item.provider_id}" ${selectedProviders.has(item.provider_id.toString()) ? 'checked' : ''}>
+				<label for="provider-${item.provider_id}">
 					<img class="logo" src="${makeLogoURL(item.logo_path)}"/>
 					${item.provider_name}
 				</label>
