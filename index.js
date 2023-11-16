@@ -82,8 +82,8 @@ function toggleFiltersSidebar() {
 }
 
 function clearFilters() {
-	$('#filters input[type="checkbox"]').prop('checked', false);
-	$('#filters label').css('text-decoration', '');
+	$('#filters ul input[type="checkbox"]').prop('checked', false);
+	$('#filters ul label').css('text-decoration', '');
 	$('#min-slider').val(defaults.rating.min);
 	$('#max-slider').val(defaults.rating.max);
 	$('.range-slider').trigger('input');
