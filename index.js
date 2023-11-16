@@ -291,8 +291,8 @@ async function main() {
 	allProviders.forEach(item => {
 		$('#provider-selector').append(
 			`<li>
-				<input type="checkbox" id="$provider-${item.provider_id}" value="${item.provider_id}">
-				<label for="$provider-${item.provider_id}">
+				<input type="checkbox" id="provider-${item.provider_id}" value="${item.provider_id}">
+				<label for="provider-${item.provider_id}">
 					<img class="logo" src="${makeLogoURL(item.logo_path)}"/>
 					${item.provider_name}
 				</label>
