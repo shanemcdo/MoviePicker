@@ -272,7 +272,6 @@ function displayLoading() {
 async function displayMovieOrTv() {
 	clearError();
 	const media = await getMovieOrTv();
-	console.log(media);
 	if(media === null) {
 		displayError();
 		return;
@@ -303,7 +302,6 @@ async function displayMovieOrTv() {
 		$(`#genre-selector input[type="checkbox"][value="${$(this).attr('data-genre-id')}"]`).click();
 	});
 	const providers = await getMediaProviders(media.id);
-	console.log(providers);
 	const providersEl = $('#movie-providers');
 	providersEl.html('');
 	if(providers !== undefined) {
@@ -330,7 +328,6 @@ function loadGenres(genres) {
 	const excludedGenres = mediaTypeIsMovie ? excludedMovieGenres : excludedTvGenres;
 	$('#genre-selector').html('');
 	genres.forEach(item => {
-		console.log(item.id, excludedGenres.has(item.id.toString()) ? 'style="text-decoration: strike-through;"' : '');
 		$('#genre-selector').append(
 			`<li>
 				<input type="checkbox" value="${item.id}" id="genre-${item.id}" ${selectedGenres.has(item.id.toString()) ? 'checked' : ''}>
