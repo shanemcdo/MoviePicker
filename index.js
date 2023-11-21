@@ -303,8 +303,8 @@ async function displayMovieOrTv() {
 	});
 	const providers = await getMediaProviders(media.id);
 	const providersEl = $('#movie-providers');
-	providersEl.html('');
 	if(providers !== undefined) {
+		providersEl.html('');
 		for(const type in monetizationTypes) {
 			const name = monetizationTypes[type];
 			if(providers[type] !== undefined && providers[type].length > 0) {
@@ -320,6 +320,8 @@ async function displayMovieOrTv() {
 				const list = providersEl.append(`<a href="${providers.link}">${logos}</a>`);
 			}
 		}
+	} else {
+		providersEl.html('<b>This is not available to stream in your region</b>');
 	}
 }
 
