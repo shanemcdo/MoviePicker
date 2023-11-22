@@ -217,6 +217,7 @@ async function getMovieOrTv() {
 				currentTvPage = 1;
 			}
 		}
+		previousFilters = args;
 		if(mediaTypeIsMovie) {
 			previousMovieFilters = args;
 		} else {
