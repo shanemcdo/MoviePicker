@@ -113,9 +113,7 @@ function getTvGenre(id) {
 function getMoreLikeThis() {
 	selectedMovieGenres.clear();
 	$('#genre-selector input[type="checkbox"]').prop('checked', false);
-	$('.movie-genre').each(function() {
-		$(this).click();
-	});
+	$('.movie-genre').click();
 	displayMovieOrTv();
 }
 
