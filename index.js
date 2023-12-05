@@ -191,7 +191,7 @@ async function getMovieOrTv() {
 			'watch_region': $('#regions').val(),
 			'certification_country': 'US',
 			'certification.gte': 'G',
-			'certification.lte': 'PG-13',
+			'certification.lte': 'R',
 			'with_genres': [...selectedGenres].join(','),
 			'without_genres': [...excludedGenres].join(','),
 			'with_watch_providers': [...selectedProviders].join('|'),
