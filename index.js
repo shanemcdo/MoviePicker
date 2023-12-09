@@ -10,6 +10,7 @@ const imageBaseURL = 'https://image.tmdb.org/t/p';
 const posterBaseURL = `${imageBaseURL}/original`;
 const logoBaseURL = `${imageBaseURL}/w45`;
 const bigLogoBaseURL = `${imageBaseURL}/w500`;
+const languagesListURL = 'https://api.themoviedb.org/3/configuration/languages';
 const tmdbOptions = {
 	method: 'GET',
 	headers: {
@@ -40,12 +41,14 @@ let allTvGenres = [];
 let allMovieProviders = [];
 let allTvProviders = [];
 let allRegions = [];
+let allLanguages = [];
 const defaults = {
 	rating: {
 		min: parseInt($('#min-slider').prop('min')),
 		max: parseInt($('#min-slider').prop('max')),
 	},
 	region: 'US',
+	language: 'en',
 };
 let mediaTypeIsMovie = true;
 
@@ -142,6 +145,11 @@ async function getRegions() {
 	return (await res.json()).results;
 }
 
+async function getLanguages() {
+	const res = await fetch(languagesListURL, tmdbOptions);
+	return await res.json();
+};
+
 async function getMovieProviders(movieId) {
 	const url = `${apiBaseURL}/movie/${movieId}/watch/providers`;
 	const res = await fetch(url, tmdbOptions);
@@ -163,8 +171,7 @@ async function getMedia(args, baseURL) {
 	url = url.toString();
 	try {
 		const res = await fetch(url, tmdbOptions);
-		const json = await res.json();
-		return json;
+		return await res.json();
 	} catch (e) {
 		return null;
 	}
@@ -198,8 +205,10 @@ async function getMovieOrTv() {
 			'with_watch_monetization_types': [...selectedMonetizationTypes].join('|'),
 			'vote_average.gte': $('#min-slider').val(),
 			'vote_average.lte': $('#max-slider').val(),
+			'with_original_language': $('#languages').val(),
 			'page': currentPage
 		};
+		console.table(args);
 		if(
 			args.with_genres !== previousFilters.with_genres
 			|| args.without_genres !== previousFilters.without_genres
@@ -207,6 +216,7 @@ async function getMovieOrTv() {
 			|| args['vote_average.gte'] !== previousFilters['vote_average.gte']
 			|| args['vote_average.lte'] !== previousFilters['vote_average.lte']
 			|| args['watch_region'] !== previousFilters['watch_region']
+			|| args['with_original_language'] !== previousFilters['with_original_language']
 		) {
 			args.page = currentPage = 1;
 			if(mediaTypeIsMovie) {
@@ -426,6 +436,15 @@ function loadRegions() {
 	$('#regions').val(defaults.region);
 }
 
+function loadLanguages() {
+	$('#languages').append(
+		allLanguages.map(lang => 
+			`<option value="${lang.iso_639_1}">${lang.english_name}</option>`
+		).join('')
+	);
+	$('#languages').val(defaults.language);
+}
+
 async function main() {
 	$('#media-type-switch').on('change', async function() {
 		let completed = false;
@@ -489,6 +508,8 @@ async function main() {
 	});
 	allRegions = await getRegions();
 	loadRegions();
+	allLanguages = await getLanguages();
+	loadLanguages();
 	await displayMovieOrTv();
 }
 
