@@ -1,5 +1,4 @@
-import { mediaType } from './globals'
-import { displayMovieOrTv } from './helpers'
+import { mediaType, displayMovieOrTv } from './globals'
 import './Banner.scss'
 
 function toggleFiltersSidebar() {

@@ -1,23 +1,3 @@
-const apiBaseURL = 'https://api.themoviedb.org/3';
-const discoverMovieBaseURL = `${apiBaseURL}/discover/movie`;
-const discoverTvBaseURL = `${apiBaseURL}/discover/tv`;
-const movieGenreListURL = `${apiBaseURL}/genre/movie/list`;
-const tvGenreListURL = `${apiBaseURL}/genre/tv/list`;
-const movieProviderListURL = `${apiBaseURL}/watch/providers/movie`;
-const tvProviderListURL = `${apiBaseURL}/watch/providers/tv`;
-const regionListURL = `${apiBaseURL}/watch/providers/regions`;
-const imageBaseURL = 'https://image.tmdb.org/t/p';
-const posterBaseURL = `${imageBaseURL}/original`;
-const logoBaseURL = `${imageBaseURL}/w45`;
-const bigLogoBaseURL = `${imageBaseURL}/w500`;
-const languagesListURL = 'https://api.themoviedb.org/3/configuration/languages';
-const tmdbOptions = {
-	method: 'GET',
-	headers: {
-		accept: 'application/json',
-		Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxOWNjMDI5ODQzODAyMjI5MmFiNTBiZmI2OWEzODUwMiIsInN1YiI6IjYzMWY5ZGMyZTU1OTM3MDA3YWRhMWUxNCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.B4o3rNSDNFr_2_1l0hHCWEQO-YNZ1CAk7QtPrzeQwQo'
-	}
-};
 const monetizationTypes = { 
 	flatrate: 'Stream',
 	buy: 'Buy',
@@ -52,18 +32,6 @@ const defaults = {
 };
 let mediaTypeIsMovie = true;
 
-function makeImageURL(path) {
-	return `${posterBaseURL}${path}`;
-}
-
-function makeLogoURL(path) {
-	return `${logoBaseURL}${path}`;
-}
-
-function makeBigLogoURL(path) {
-	return `${bigLogoBaseURL}${path}`;
-}
-
 function toggleFiltersSidebar() {
 	const filters = $('#filters');
 	const hamburger = $('#hamburger-glyph');
@@ -90,23 +58,6 @@ function clearFilters() {
 	selectedMovieGenres.clear();
 	excludedMovieGenres.clear();
 	selectedMovieProviders.clear();
-}
-
-function getGenre(id, genres) {
-	for(const genre of genres) {
-		if(id == genre.id) {
-			return genre.name;
-		}
-	}
-	return name;
-}
-
-function getMovieGenre(id) {
-	return getGenre(id, allMovieGenres);
-}
-
-function getTvGenre(id) {
-	return getGenre(id, allTvGenres);
 }
 
 function getMoreLikeThis() {
