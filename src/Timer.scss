@@ -1,0 +1,62 @@
+.timer {
+    $border-radius: 0.4rem;
+
+    svg {
+        width: 60%;
+    }
+
+    .parent {
+        display: grid;
+        align-items: center;
+        justify-items: center;
+    }
+
+    .child {
+        grid-area: 1 / 1 / 2 / 2;
+    }
+
+    input {
+        appearance: none;
+        border: none;
+        font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+        border-radius: $border-radius;
+
+        &:focus {
+            outline: none;
+        }
+    }
+
+    input,
+    button {
+        font-size: 1.2rem;
+        padding: 0.2rem 0.5rem;
+    }
+
+    button {
+        margin: 0.3rem;
+    }
+
+    .time-field-container {
+        font-size: 0.7rem;
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+    }
+
+    .time-fields {
+        display: flex;
+
+        /* Middle fields */
+        :not(:first-child):not(:last-child) input {
+            border-radius: 0;
+        }
+
+        :first-child input {
+            border-radius: $border-radius 0 0 $border-radius;
+        }
+
+        :last-child input {
+            border-radius: 0 $border-radius $border-radius 0;
+        }
+    }
+}
