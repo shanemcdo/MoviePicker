@@ -4,6 +4,6 @@ import { render } from 'solid-js/web'
 import './index.css'
 import App from './App'
 
-const root = document.getElementById('root')
+const body = document.querySelector('body');
 
-render(() => <App />, root!)
+render(() => <App />, body!);
