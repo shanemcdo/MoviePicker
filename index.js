@@ -52,10 +52,6 @@ const defaults = {
 };
 let mediaTypeIsMovie = true;
 
-function random(array) {
-	return array[Math.floor(Math.random() * array.length)];
-}
-
 function makeImageURL(path) {
 	return `${posterBaseURL}${path}`;
 }
