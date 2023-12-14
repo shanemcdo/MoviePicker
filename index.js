@@ -16,8 +16,6 @@ let currentMoviePage = 1;
 let currentTvPage = 1;
 let previousMovieFilters = {};
 let previousTvFilters = {};
-let allMovieGenres = [];
-let allTvGenres = [];
 let allMovieProviders = [];
 let allTvProviders = [];
 let allRegions = [];
@@ -31,22 +29,6 @@ const defaults = {
 	language: 'en',
 };
 let mediaTypeIsMovie = true;
-
-function toggleFiltersSidebar() {
-	const filters = $('#filters');
-	const hamburger = $('#hamburger-glyph');
-	if(hamburger.hasClass('fa-x')) {
-		$('#credit').css('left', '');
-		filters.css('left', '');
-		hamburger.removeClass('fa-x');
-		hamburger.addClass('fa-bars');
-	} else {
-		filters.css('left', 0);
-		$('#credit').css('left', 0);
-		hamburger.removeClass('fa-bars');
-		hamburger.addClass('fa-x');
-	}
-}
 
 function clearFilters() {
 	$('#filters ul input[type="checkbox"]').prop('checked', false);

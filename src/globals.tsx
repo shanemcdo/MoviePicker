@@ -34,7 +34,10 @@ const tmdbOptions = {
 
 export const [mediaType, setMediaType] = createSignal(MediaType.Movie);
 export const mediaTypeIsMovie = () => mediaType() == MediaType.Movie;
+export const [filtersSidebarIsOpen, setFiltersSideBarIsOpen] = createSignal(false);
+export const toggleFiltersSidebar = () => setFiltersSideBarIsOpen(b => !b);
 export const [allMovieGenres, setAllMovieGenres] = createStore<Genre[]>([]);
+export const [allTvGenres, setAllTvGenres] = createStore<Genre[]>([]);
 
 export function random<T>(array: T[]): T {
 	return array[Math.floor(Math.random() * array.length)];
@@ -52,10 +55,6 @@ export function makeBigLogoURL(path: string): string {
 	return `${bigLogoBaseURL}${path}`;
 }
 
-export function displayMovieOrTv() {
-	// TODO
-}
-
 function getGenre(id: number, genres: Genre[]): string {
 	for(const genre of genres) {
 		if(id == genre.id) {
@@ -65,11 +64,15 @@ function getGenre(id: number, genres: Genre[]): string {
 	return '';
 }
 
-function getMovieGenre(id: number): string {
+export function getMovieGenre(id: number): string {
 	return getGenre(id, allMovieGenres);
 }
 
-function getTvGenre(id: number): string {
+export function getTvGenre(id: number): string {
 	return getGenre(id, allTvGenres);
+}
+
+export function displayMovieOrTv() {
+	// TODO
 }
 
