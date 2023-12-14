@@ -1,0 +1,24 @@
+$font-size: 1.3rem;
+
+#banner {
+	background: var(--bg-accent);
+	padding: 0.3rem;
+	text-align: center;
+	position: sticky;
+	top: 0;
+
+	#hamburger {
+		font-size: $font-size;
+		float: left;
+	}
+
+	#website-title {
+		font-size: $font-size;
+		display: inline;
+	}
+
+	#refresh-button {
+		font-size: $font-size;
+		float: right;
+	}
+}
