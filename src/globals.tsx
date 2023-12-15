@@ -171,7 +171,7 @@ const tmdbOptions = {
 		Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxOWNjMDI5ODQzODAyMjI5MmFiNTBiZmI2OWEzODUwMiIsInN1YiI6IjYzMWY5ZGMyZTU1OTM3MDA3YWRhMWUxNCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.B4o3rNSDNFr_2_1l0hHCWEQO-YNZ1CAk7QtPrzeQwQo'
 	}
 };
-const defaults = {
+export const defaults = {
 	rating: {
 		min: 0,
 		max: 10
@@ -211,6 +211,7 @@ export const [media, setMedia] = createStore<Media | null>(null);
 // signals
 export const [mediaType, setMediaType] = createSignal(MediaType.Movie);
 export const mediaTypeIsMovie = () => mediaType() == MediaType.Movie;
+export const setMediaTypeIsMovie = (b: boolean) => setMediaType(b ? MediaType.Movie : MediaType.Tv);
 export const [filtersSidebarIsOpen, setFiltersSideBarIsOpen] = createSignal(false);
 export const toggleFiltersSidebar = () => setFiltersSideBarIsOpen(b => !b);
 export const [region, setRegion] = createSignal(defaults.region);

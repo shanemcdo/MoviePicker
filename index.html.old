@@ -1,93 +1,24 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<title>Movie Picker</title>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width">
-		<link href="index.css" type="text/css" rel="stylesheet">
-		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" type="text/css" rel="stylesheet">
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@300;700&family=Roboto&display=swap" rel="stylesheet">
-		<script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
-		<script src="index.js" defer></script>
-	</head>
-	<body>
-		<nav id="banner">
-			<button id="hamburger" class="borderless-button mobile-only" onclick="toggleFiltersSidebar()"><i id="hamburger-glyph" class="fa-solid fa-bars"></i></button>
-			<p id="website-title"><span id="media-type">Movie</span> Picker</p>
-			<button id="refresh-button" class="borderless-button" onclick="displayMovieOrTv();"><i class="fa-solid fa-arrows-rotate"></i></button>
-		</nav>
-		<div id="wrapper">
-			<div id="filters">
-				<label for="media-type-switch" class="switch">
-					Movie
-					<input type="checkbox" name="media-type-switch" id="media-type-switch"/>
-					TV Show
-				</label>
-				<details>
-					<summary>Genres</summary>
-					<input type="search" class="selector-search" placeholder="Search Genres"/>
-					<ul id="genre-selector" class="selector-list"></ul>
-				</details>
-				<details>
-					<summary>Providers</summary>
-					<input type="search" class="selector-search" placeholder="Search Providers"/>
-					<ul id="provider-selector" class="selector-list"></ul>
-				</details>
-				<details>
-					<summary>Monetization Types</summary>
-					<ul id="monetization-selector" class="selector-list"></ul>
-				</details>
-				<details>
-					<summary>Rating</summary>
-					<div id="rating-slider-wrapper">
-						<label for="min-slider">Min:</label>
-						<input type="range" value="0" name="min-slider" id="min-slider" min="0" max="10" step="0.1" data-value-el="min-rating" class="range-slider"/>
-						<span id="min-rating">0.0</span>
-						<label for="max-slider">Max:</label>
-						<input type="range" value="10" name="max-slider" id="max-slider" min="0" max="10" step="0.1" data-value-el="max-rating" class="range-slider"/>
-						<span id="max-rating">10.0</span>
-					</div>
-				</details>
-				<details>
-					<summary>Watch Region</summary>
-					<select name="regions" id="regions"></select>
-				</details>
-				<details>
-					<summary>Language</summary>
-					<select name="languages" id="languages"></select>
-				</details>
-				<button id="clear-filters-button" class="normal-button" onclick="clearFilters();">Clear Filters</button>
-				<div class="flex-spacer"></div>
-				<div id="credit">
-					<img src="assets/tmdb.png" alt=""/>
-					<p>This product uses the TMDB API but is not endorsed or certified by TMDB.</p>
-				</div>
-			</div>
-			<div id="movie-info-wrapper">
-				<div id="movie-info" style="display: none;">
-					<p class="movie-title mobile-only"></p>
-					<div id="movie-poster-wrapper">
-						<img id="movie-poster" alt="Movie Poster"/>
-					</div>
-					<div id="movie-text">
-						<p class="movie-title desktop-only"></p>
-						<div id="movie-date-and-rating" class="pair">
-							<p id="movie-date"></p>
-							<p id="movie-rating"></p>
-						</div>
-						<div id="movie-genres"></div>
-						<p id="movie-desc"></p>
-						<div id="movie-providers"></div>
-						<button class="normal-button" onclick="getMoreLikeThis();" title="Find another movie with the same genres">More Like This</button>
-					</div>
-				</div>
-				<div id="error-info">
-					<h1>No Movie</h1>
-					<p id="error-message">Loading...<p>
-				</div>
-			</div>
+<script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+<div id="movie-info-wrapper">
+	<div id="movie-info" style="display: none;">
+		<p class="movie-title mobile-only"></p>
+		<div id="movie-poster-wrapper">
+			<img id="movie-poster" alt="Movie Poster"/>
 		</div>
-	</body>
-</html>
+		<div id="movie-text">
+			<p class="movie-title desktop-only"></p>
+			<div id="movie-date-and-rating" class="pair">
+				<p id="movie-date"></p>
+				<p id="movie-rating"></p>
+			</div>
+			<div id="movie-genres"></div>
+			<p id="movie-desc"></p>
+			<div id="movie-providers"></div>
+			<button class="normal-button" onclick="getMoreLikeThis();" title="Find another movie with the same genres">More Like This</button>
+		</div>
+	</div>
+	<div id="error-info">
+		<h1>No Movie</h1>
+		<p id="error-message">Loading...<p>
+	</div>
+</div>
