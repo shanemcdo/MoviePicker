@@ -26,6 +26,7 @@ body {
 	display: flex;
 	flex-direction: column;
 }
+
 #wrapper {
 	min-height: 0px;
 	flex-grow: 1;
@@ -43,6 +44,7 @@ body {
 	border: none;
 }
 
+/* TODO use nesting here*/
 .normal-button:active {
 	background: var(--bg);
 }
@@ -95,7 +97,7 @@ body {
   background: #DDD;
 }
 
-/* TODO spread this out and use a var for max-width */
+/* TODO spread this out and use a scss var for max-width */
 @media only screen and (max-width: 820px) {
 	html {
 		--sidebar-size: 90vw;
