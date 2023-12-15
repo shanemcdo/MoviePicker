@@ -134,8 +134,9 @@ export default function Filters() {
 							data-genre-id={genre.id}
 							title={`$"Exclude ${genre.name} Genre`}
 							class="borderless-button exclude-button"
-							onClick={(e: MouseEvent & { target: HTMLInputElement }) => {
-								const label = e.target.parentElement?.querySelector('label')!;
+							onClick={(e: MouseEvent ) => {
+								const el = e.target as HTMLInputElement;
+								const label = el.parentElement?.querySelector('label')!;
 								if(exclude.has(id)) {
 									exclude.delete(id);
 									label.style.textDecoration = '';
@@ -143,7 +144,7 @@ export default function Filters() {
 									exclude.add(id);
 									label.style.textDecoration = 'line-through';
 									if(include.has(id)) {
-										(e.target.parentElement?.querySelector('input[type="checkbox"]') as HTMLInputElement)?.click();
+										(el.parentElement?.querySelector('input[type="checkbox"]') as HTMLInputElement)?.click();
 									}
 								}
 							}}
