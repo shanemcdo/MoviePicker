@@ -179,7 +179,7 @@ export const defaults = {
 	region: 'US',
 	language: 'en',
 };
-const monetizationTypes = { 
+export const monetizationTypes = { 
 	flatrate: 'Stream',
 	buy: 'Buy',
 	rent: 'Rent',
@@ -214,10 +214,12 @@ export const mediaTypeIsMovie = () => mediaType() == MediaType.Movie;
 export const setMediaTypeIsMovie = (b: boolean) => setMediaType(b ? MediaType.Movie : MediaType.Tv);
 export const [filtersSidebarIsOpen, setFiltersSideBarIsOpen] = createSignal(false);
 export const toggleFiltersSidebar = () => setFiltersSideBarIsOpen(b => !b);
-export const [region, setRegion] = createSignal(defaults.region);
 export const [minRating, setMinRating] = createSignal(defaults.rating.min);
 export const [maxRating, setMaxRating] = createSignal(defaults.rating.max);
 export const [errorMessage, setErrorMessage] = createSignal('');
+
+export const allGenres = () => mediaTypeIsMovie() ? allMovieGenres : allTvGenres
+export const allProviders = () => mediaTypeIsMovie() ? allMovieProviders : allTvProviders
 
 function tvToMedia(tv: Tv): Media { 
 	const { name, original_name, first_air_date, ...others} = tv;
@@ -268,34 +270,52 @@ export function getTvGenre(id: number): string {
 	return getGenre(id, allTvGenres);
 }
 
-export async function getMovieGenres(): Promise<Genre[]> {
+async function getMovieGenres(): Promise<Genre[]> {
 	const res = await fetch(movieGenreListURL, tmdbOptions);
 	return (await res.json()).genres;
 }
 
-export async function getTvGenres(): Promise<Genre[]> {
+async function getTvGenres(): Promise<Genre[]> {
 	const res = await fetch(tvGenreListURL, tmdbOptions);
 	return (await res.json()).genres;
 }
 
-export async function getAllMovieProviders(): Promise<Provider[]> {
+async function getAllMovieProviders(): Promise<Provider[]> {
 	const res = await fetch(movieProviderListURL, tmdbOptions);
 	return (await res.json()).results;
 }
 
-export async function getAllTvProviders(): Promise<Provider[]> {
+async function getAllTvProviders(): Promise<Provider[]> {
 	const res = await fetch(tvProviderListURL, tmdbOptions);
 	return (await res.json()).results;
 }
 
-export async function getRegions(): Promise<Region[]> {
+async function getRegions(): Promise<Region[]> {
 	const res = await fetch(regionListURL, tmdbOptions);
 	return (await res.json()).results;
 }
 
-export async function getLanguages(): Promise<Language[]> {
+async function getLanguages(): Promise<Language[]> {
 	const res = await fetch(languagesListURL, tmdbOptions);
 	return await res.json();
+};
+
+export function getAllApiData() {
+	getMovieGenres().then(setAllMovieGenres);
+	// TODO uncomment when ready to not spam API
+	getTvGenres().then(setAllTvGenres);
+	getAllMovieProviders().then(setAllMovieProviders);
+	getAllTvProviders().then(setAllTvProviders);
+	// TODO set region back to default after this
+	getRegions().then(regions => {
+		setAllRegions(regions);
+		(document.querySelector('#regions') as HTMLSelectElement).value = defaults.region;
+	});
+	// TODO set language back to default after this
+	getLanguages().then(langs => {
+		setAllLanguages(langs);
+		(document.querySelector('#languages') as HTMLSelectElement).value = defaults.language;
+	});
 };
 
 export async function getMovieProviders(movieId: number): Promise<Provider> {
@@ -343,7 +363,7 @@ async function getMovieOrTv(): Promise<Media | null> {
 	let seenMedia         = isMovie ? seenMovies             : seenTvs
 	while(1){
 		const args: Args = {
-			'watch_region': untrack(region),
+			'watch_region': (document.querySelector('#regions') as HTMLSelectElement).value,
 			'certification_country': 'US',
 			'certification.gte': 'G',
 			'certification.lte': 'R',
@@ -353,7 +373,7 @@ async function getMovieOrTv(): Promise<Media | null> {
 			'with_watch_monetization_types': [...selectedMonetizationTypes].join('|'),
 			'vote_average.gte': untrack(minRating),
 			'vote_average.lte': untrack(maxRating),
-			// 'with_original_language': (document.querySelector('#languages') as HTMLSelectElement).value,
+			'with_original_language': (document.querySelector('#languages') as HTMLSelectElement).value,
 			'page': currentPage
 		};
 		console.table(args);

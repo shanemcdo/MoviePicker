@@ -1,5 +1,20 @@
 import tmdbLogo from './assets/tmdb.png'
-import { minRating, maxRating, setMinRating, setMaxRating, setMediaTypeIsMovie, filtersSidebarIsOpen, defaults } from './globals'
+import {
+	minRating,
+	maxRating,
+	setMinRating,
+	setMaxRating,
+	setMediaTypeIsMovie,
+	filtersSidebarIsOpen,
+	allGenres,
+	allProviders,
+	allRegions,
+	allLanguages,
+	makeLogoURL,
+	monetizationTypes,
+	defaults
+} from './globals'
+import { For } from 'solid-js'
 import './filters.scss'
 
 function sliderProps(partialName: 'min' | 'max') {
@@ -49,16 +64,63 @@ export default function Filters() {
 		<details>
 			<summary>Genres</summary>
 			<input type="search" class="selector-search" placeholder="Search Genres"/>
-			<ul id="genre-selector" class="selector-list"></ul>
+			<ul id="genre-selector" class="selector-list">
+				<For each={allGenres()}>{genre => {
+					const boxId = `genre-${genre.id}`;
+					return <li>
+						<input
+							type="checkbox"
+							value={genre.id}
+							id={boxId}
+						/>
+						<label
+							for={boxId}
+							style={ /* TODO */ false ? 'text-decoration: line-through' : ''}
+						>{genre.name}</label>
+						<input
+							type="button"
+							value="X"
+							data-genre-id={genre.id}
+							title={`$"Exclude ${genre.name} Genre`}
+							class="borderless-button exclude-button"
+							onClick={() => { /* TODO */ }}
+						/>
+					</li>;
+				}}</For>
+			</ul>
 		</details>
 		<details>
 			<summary>Providers</summary>
 			<input type="search" class="selector-search" placeholder="Search Providers"/>
-			<ul id="provider-selector" class="selector-list"></ul>
+			<ul id="provider-selector" class="selector-list">
+				<For each={allProviders()}>{provider => {
+					const boxId = `provider-${provider.provider_id}`;
+					return <li>
+						<input
+							type="checkbox"
+							id={boxId}
+							value={provider.provider_id}
+						/>
+						<label for={boxId}>
+							<img class="logo" src={makeLogoURL(provider.logo_path)} />
+							{provider.provider_name}
+						</label>
+					</li>;
+				}}</For>
+			</ul>
 		</details>
 		<details>
 			<summary>Monetization Types</summary>
-			<ul id="monetization-selector" class="selector-list"></ul>
+			<ul id="monetization-selector" class="selector-list">
+				<For each={Object.keys(monetizationTypes)}>{type => {
+					const name = (monetizationTypes as { [key: string]: string })[type];
+					const id = `monetization-${type}`;
+					return <li>
+						<input type="checkbox" id={id} value={type} />
+						<label for={id} >{name}</label>
+					</li>;
+				}}</For>
+			</ul>
 		</details>
 		<details>
 			<summary>Rating</summary>
@@ -73,11 +135,19 @@ export default function Filters() {
 		</details>
 		<details>
 			<summary>Watch Region</summary>
-			<select name="regions" id="regions"></select>
+			<select name="regions" id="regions">
+				<For each={allRegions}>{region =>
+					<option value={region.iso_3166_1}>{region.english_name}</option>
+				}</For>
+			</select>
 		</details>
 		<details>
 			<summary>Language</summary>
-			<select name="languages" id="languages"></select>
+			<select name="languages" id="languages">
+				<For each={allLanguages}>{language =>
+					<option value={language.iso_639_1}>{language.english_name}</option>
+				}</For>
+			</select>
 		</details>
 		<button id="clear-filters-button" class="normal-button" onClick={clearFilters}>Clear Filters</button>
 		<div class="flex-spacer"></div>
