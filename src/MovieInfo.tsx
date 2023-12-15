@@ -46,7 +46,7 @@ export default function MovieInfo() {
 					<p class="movie-title desktop-only">{media?.title}</p>
 					<div id="movie-date-and-rating" class="pair">
 						<p id="movie-date">{media?.release_date}</p>
-						<p id="movie-rating">{media?.vote_average.toFixed(1)}</p>
+						<p id="movie-rating">{media?.vote_average?.toFixed(1)}</p>
 					</div>
 					<div id="movie-genres">
 						<For each={media?.genre_ids}>{id =>
