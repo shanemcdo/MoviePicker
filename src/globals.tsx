@@ -306,7 +306,7 @@ export async function getTvProviders(tvId: number): Promise<Provider> {
 	return (await res.json()).results.US;
 }
 
-async function getMedia(args: Record<string, string>, baseURL: string): Promise<any> {
+async function getMedia(args: Record<string, string | number>, baseURL: string): Promise<any> {
 	const url = new URL(baseURL);
 	for(const arg in args) {
 		if(!args[arg]) continue;
