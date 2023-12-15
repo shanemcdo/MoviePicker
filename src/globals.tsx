@@ -306,12 +306,10 @@ export function getAllApiData() {
 	getTvGenres().then(setAllTvGenres);
 	getAllMovieProviders().then(setAllMovieProviders);
 	getAllTvProviders().then(setAllTvProviders);
-	// TODO set region back to default after this
 	getRegions().then(regions => {
 		setAllRegions(regions);
 		(document.querySelector('#regions') as HTMLSelectElement).value = defaults.region;
 	});
-	// TODO set language back to default after this
 	getLanguages().then(langs => {
 		setAllLanguages(langs);
 		(document.querySelector('#languages') as HTMLSelectElement).value = defaults.language;
