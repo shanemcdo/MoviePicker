@@ -113,6 +113,39 @@ type Args = {
 	page: number
 };
 
+type Media = {
+	adult: boolean,
+	backdrop_path: string,
+	genre_ids: number[],
+	id: number,
+	original_language: string,
+	original_title: string,
+	overview: string,
+	popularity: number,
+	poster_path: string,
+	release_date: string,
+	title: string,
+	video: boolean,
+	vote_average: number,
+	vote_count: number,
+};
+
+type Tv = {
+	backdrop_path: string,
+	first_air_date: string,
+	genre_ids: number[],
+	id: number,
+	name: string,
+	origin_country: number[],
+	original_language: string,
+	original_name: string,
+	overview: string,
+	popularity: number,
+	poster_path: string,
+	vote_average: number,
+	vote_count: number,
+};
+
 export enum MediaType {
 	Movie = "Movie",
 	Tv = "Tv"
@@ -174,6 +207,7 @@ export const [allMovieProviders, setAllMovieProviders] = createStore<Provider[]>
 export const [allTvProviders, setAllTvProviders] = createStore<Provider[]>([]);
 export const [allRegions, setAllRegions] = createStore<Region[]>([]);
 export const [allLanguages, setAllLanguages] = createStore<Language[]>([]);
+export const [media, setMedia] = createStore<Media | null>(null);
 // signals
 export const [mediaType, setMediaType] = createSignal(MediaType.Movie);
 export const mediaTypeIsMovie = () => mediaType() == MediaType.Movie;
@@ -182,6 +216,19 @@ export const toggleFiltersSidebar = () => setFiltersSideBarIsOpen(b => !b);
 export const [region, setRegion] = createSignal(defaults.region);
 export const [minRating, setMinRating] = createSignal(defaults.rating.min);
 export const [maxRating, setMaxRating] = createSignal(defaults.rating.max);
+export const [errorMessage, setErrorMessage] = createSignal('');
+
+function tvToMedia(tv: Tv): Media { 
+	const { name, original_name, first_air_date, ...others} = tv;
+	return {
+		adult: false,
+		video: true,
+		title: name,
+		original_title: original_name,
+		release_date: first_air_date,
+		...others
+	};
+}
 
 export function random<T>(array: T[]): T {
 	return array[Math.floor(Math.random() * array.length)];
@@ -262,12 +309,11 @@ export async function getTvProviders(tvId: number): Promise<Provider> {
 	return (await res.json()).results.US;
 }
 
-async function getMedia(args: Args, baseURL: string) {
+async function getMedia(args: { [key: string]: string | number }, baseURL: string): Promise<any> {
 	const url = new URL(baseURL);
-	const a: { [key: string]: string } = { ...args, page: args.page.toString() };
-	for(const arg in a) {
-		if(!a[arg]) continue;
-		url.searchParams.set(arg, a[arg]);
+	for(const arg in args) {
+		if(!args[arg]) continue;
+		url.searchParams.set(arg, args[arg].toString());
 	}
 	try {
 		const res = await fetch(url, tmdbOptions);
@@ -276,15 +322,16 @@ async function getMedia(args: Args, baseURL: string) {
 		return null;
 	}
 }
+
 async function getMovies(args: Args) {
-	return getMedia(args, discoverMovieBaseURL);
+	return await getMedia(args, discoverMovieBaseURL);
 }
 
 async function getTvs(args: Args) {
-	return getMedia(args, discoverTvBaseURL);
+	return await getMedia(args, discoverTvBaseURL);
 }
 
-async function getMovieOrTv() {
+async function getMovieOrTv(): Promise<Media | null> {
 	const isMovie = untrack(mediaTypeIsMovie);
 	let selectedGenres    = isMovie ? selectedMovieGenres    : selectedTvGenres;
 	let excludedGenres    = isMovie ? excludedMovieGenres    : excludedTvGenres;
@@ -334,24 +381,28 @@ async function getMovieOrTv() {
 		const media = await getMediaList(args);
 		const mediaType = isMovie ? 'movie' : 'shows';
 		if(media === null) {
-			$('#error-message').html('Could not connect to API');
+			setErrorMessage('Could not connect to API');
 			return null;
 		}
 		if(media.results === undefined) {
-			$('#error-message').html(`API returned message: ${media.status_message}`);
+			setErrorMessage(`API returned message: ${media.status_message}`);
 			return null;
 		}
 		if(media.total_pages < 1) {
-			$('#error-message').html(`No ${mediaType} found with selected filters`);
+			setErrorMessage(`No ${mediaType} found with selected filters`);
 			return null;
 		}
 		if(media.total_pages < currentPage) {
-			$('#error-message').html(`No more ${mediaType} remaining`);
+			setErrorMessage(`No more ${mediaType} remaining`);
 			return null;
 		}
-		const filteredArray = media.results.filter(item => !seenMedia.has(item.id));
+		const filteredArray = media.results.filter((item: { id: number }) => !seenMedia.has(item.id));
 		if(filteredArray.length > 0) {
-			return random(filteredArray);
+			const media = random<Media | Tv>(filteredArray);
+			if(isMovie) {
+				return media as Media;
+			}
+			return tvToMedia(media as Tv);
 		}
 		currentPage += 1;
 		if(isMovie) {
@@ -360,12 +411,12 @@ async function getMovieOrTv() {
 			currentTvPage = currentPage;
 		}
 	}
+	// unreachable but here for ts compiler
+	return null
 }
 
 
-
-
-
-export function displayMovieOrTv() {
-	// TODO
+export async function displayMovieOrTv() {
+	const media = await getMovieOrTv()!;
+	setMedia(media);
 }
