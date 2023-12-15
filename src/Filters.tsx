@@ -21,7 +21,7 @@ import {
     selectedMonetizationTypes,
 } from './globals'
 import { createEffect, For, on } from 'solid-js'
-import './filters.scss'
+import './Filters.scss'
 
 function sliderProps(partialName: 'min' | 'max') {
 	const name = partialName + '-slider';
