@@ -12,9 +12,15 @@ import {
 	allLanguages,
 	makeLogoURL,
 	monetizationTypes,
-	defaults
+	defaults,
+	mediaType,
+    displayMovieOrTv,
+	selectedGenres,
+    excludedGenres,
+    selectedProviders,
+    selectedMonetizationTypes,
 } from './globals'
-import { For } from 'solid-js'
+import { createEffect, For, on } from 'solid-js'
 import './filters.scss'
 
 function sliderProps(partialName: 'min' | 'max') {
@@ -44,9 +50,16 @@ function sliderProps(partialName: 'min' | 'max') {
 }
 
 function clearFilters() {
-	setMinRating(defaults.rating.min);
-	setMaxRating(defaults.rating.max);
-	// TODO reset other filters
+	selectedGenres().clear();
+	excludedGenres().clear();
+	selectedProviders().clear();
+	selectedMonetizationTypes.clear();
+	document.querySelectorAll('.selector-list input[type="checkbox"]').forEach(el => {
+		(el as HTMLInputElement).checked = false;
+	});
+	document.querySelectorAll('.selector-list label').forEach(el => {
+		(el as HTMLLabelElement).style.textDecoration = '';
+	});
 }
 
 function searchList(this: HTMLInputElement) {
@@ -68,6 +81,12 @@ export default function Filters() {
 		class: 'selector-search',
 		onInput: searchList
 	};
+	createEffect(on(mediaType, () => {
+		displayMovieOrTv();
+	}));
+	createEffect(() => console.log('sg', selectedGenres()));
+	createEffect(() => console.log('eg', excludedGenres()));
+	createEffect(() => console.log('sp', selectedProviders()));
 	return <div id="filters" style={filtersSidebarIsOpen() ? 'left: 0' : ''} >
 		<label for="media-type-switch" class="switch">
 			Movie
@@ -84,16 +103,30 @@ export default function Filters() {
 			<input { ...selectorSearchProps } placeholder="Search Genres"/>
 			<ul id="genre-selector" class="selector-list">
 				<For each={allGenres()}>{genre => {
-					const boxId = `genre-${genre.id}`;
+					const id = genre.id.toString();
+					const boxId = `genre-${id}`;
+					const include = selectedGenres();
+					const exclude = excludedGenres();
 					return <li>
 						<input
 							type="checkbox"
-							value={genre.id}
+							value={id}
 							id={boxId}
+							checked={include.has(id)}
+							onInput={(e: InputEvent & { target: HTMLInputElement }) => {
+								if(e.target.checked) {
+									include.add(id);
+									if(exclude.has(id)) {
+										(e.target.parentElement?.querySelector('input[type="button"]') as HTMLElement)?.click();
+									}
+								} else {
+									include.delete(id);
+								}
+							}}
 						/>
 						<label
 							for={boxId}
-							style={ /* TODO */ false ? 'text-decoration: line-through' : ''}
+							style={exclude.has(genre.id.toString()) ? 'text-decoration: line-through' : ''}
 						>{genre.name}</label>
 						<input
 							type="button"
@@ -101,7 +134,19 @@ export default function Filters() {
 							data-genre-id={genre.id}
 							title={`$"Exclude ${genre.name} Genre`}
 							class="borderless-button exclude-button"
-							onClick={() => { /* TODO */ }}
+							onClick={(e: MouseEvent & { target: HTMLInputElement }) => {
+								const label = e.target.parentElement?.querySelector('label')!;
+								if(exclude.has(id)) {
+									exclude.delete(id);
+									label.style.textDecoration = '';
+								} else {
+									exclude.add(id);
+									label.style.textDecoration = 'line-through';
+									if(include.has(id)) {
+										(e.target.parentElement?.querySelector('input[type="checkbox"]') as HTMLInputElement)?.click();
+									}
+								}
+							}}
 						/>
 					</li>;
 				}}</For>
@@ -113,11 +158,21 @@ export default function Filters() {
 			<ul id="provider-selector" class="selector-list">
 				<For each={allProviders()}>{provider => {
 					const boxId = `provider-${provider.provider_id}`;
+					const id = provider.provider_id.toString();
+					const include = selectedProviders();
 					return <li>
 						<input
 							type="checkbox"
 							id={boxId}
-							value={provider.provider_id}
+							value={id}
+							checked={include.has(id)}
+							onInput={() => {
+								if(include.has(id)){
+									include.delete(id);
+								} else {
+									include.add(id);
+								}
+							}}
 						/>
 						<label for={boxId}>
 							<img class="logo" src={makeLogoURL(provider.logo_path)} />
@@ -134,7 +189,18 @@ export default function Filters() {
 					const name = (monetizationTypes as { [key: string]: string })[type];
 					const id = `monetization-${type}`;
 					return <li>
-						<input type="checkbox" id={id} value={type} />
+						<input
+							type="checkbox"
+							id={id}
+							value={type} 
+							onInput={() => {
+								if(selectedMonetizationTypes.has(type)){
+									selectedMonetizationTypes.delete(type);
+								} else {
+									selectedMonetizationTypes.add(type);
+								}
+							}}
+						/>
 						<label for={id} >{name}</label>
 					</li>;
 				}}</For>

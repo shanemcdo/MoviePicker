@@ -192,7 +192,7 @@ export const monetizationTypes = {
 	rent: 'Rent',
 };
 // TODO
-const selectedMonetizationTypes = new Set();
+export const selectedMonetizationTypes = new Set();
 const selectedMovieGenres = new Set();
 const selectedTvGenres = new Set();
 const excludedMovieGenres = new Set();
@@ -217,6 +217,9 @@ export const [allLanguages, setAllLanguages] = createStore<Language[]>([]);
 export const [media, setMedia] = createStore<Partial<Media>>({});
 export const allGenres = () => mediaTypeIsMovie() ? allMovieGenres : allTvGenres
 export const allProviders = () => mediaTypeIsMovie() ? allMovieProviders : allTvProviders
+export const selectedGenres = () => mediaTypeIsMovie() ? selectedMovieGenres : selectedTvGenres;
+export const selectedProviders = () => mediaTypeIsMovie() ? selectedMovieProviders : selectedTvProviders;
+export const excludedGenres = () => mediaTypeIsMovie() ? excludedMovieGenres : excludedTvGenres;
 // signals
 export const [mediaType, setMediaType] = createSignal(MediaType.Movie);
 export const mediaTypeIsMovie = () => mediaType() == MediaType.Movie;
