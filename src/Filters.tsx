@@ -49,7 +49,25 @@ function clearFilters() {
 	// TODO reset other filters
 }
 
+function searchList(this: HTMLInputElement) {
+	const val = this.value.toLowerCase();
+	this.parentElement?.querySelectorAll('li').forEach(el => {
+		const labelName = el.querySelector('label')?.innerText?.toLowerCase() ?? '';
+		if(labelName === '') return;
+		if(labelName.includes(val)) {
+			el.style.display = '';
+		} else {
+			el.style.display = 'none';
+		}
+	});
+}
+
 export default function Filters() {
+	const selectorSearchProps = {
+		type: 'search',
+		class: 'selector-search',
+		onInput: searchList
+	};
 	return <div id="filters" style={filtersSidebarIsOpen() ? 'left: 0' : ''} >
 		<label for="media-type-switch" class="switch">
 			Movie
@@ -63,7 +81,7 @@ export default function Filters() {
 		</label>
 		<details>
 			<summary>Genres</summary>
-			<input type="search" class="selector-search" placeholder="Search Genres"/>
+			<input { ...selectorSearchProps } placeholder="Search Genres"/>
 			<ul id="genre-selector" class="selector-list">
 				<For each={allGenres()}>{genre => {
 					const boxId = `genre-${genre.id}`;
@@ -91,7 +109,7 @@ export default function Filters() {
 		</details>
 		<details>
 			<summary>Providers</summary>
-			<input type="search" class="selector-search" placeholder="Search Providers"/>
+			<input { ...selectorSearchProps } placeholder="Search Providers"/>
 			<ul id="provider-selector" class="selector-list">
 				<For each={allProviders()}>{provider => {
 					const boxId = `provider-${provider.provider_id}`;
