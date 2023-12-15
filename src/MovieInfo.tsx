@@ -1,4 +1,4 @@
-import { Show, For } from 'solid-js';
+import { Show, For, createEffect } from 'solid-js';
 import { media, displayMovieOrTv, makePosterURL, allGenres, errorMessage } from './globals'
 import MovieProviders from './MovieProviders'
 import './MovieInfo.scss'
@@ -24,6 +24,9 @@ function getMoreLikeThis() {
 
 export default function MovieInfo() {
 	displayMovieOrTv();
+	createEffect(() => {
+		document.body.style.backgroundImage = `linear-gradient(var(--bg-transparent), var(--bg-transparent)), url(${makePosterURL(media?.backdrop_path)})`;
+	});
 	return <div id="movie-info-wrapper">
 		<Show
 			when={Object.keys(media).length > 0}
