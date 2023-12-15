@@ -1,5 +1,6 @@
 import tmdbLogo from './assets/tmdb.png'
 import { minRating, maxRating, setMinRating, setMaxRating, setMediaTypeIsMovie, filtersSidebarIsOpen, defaults } from './globals'
+import './filters.scss'
 
 function sliderProps(partialName: 'min' | 'max') {
 	const name = partialName + '-slider';
