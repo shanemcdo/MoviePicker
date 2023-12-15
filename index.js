@@ -1,15 +1,3 @@
-function clearFilters() {
-	$('#filters ul input[type="checkbox"]').prop('checked', false);
-	$('#filters ul label').css('text-decoration', '');
-	$('#min-slider').val(defaults.rating.min);
-	$('#max-slider').val(defaults.rating.max);
-	$('.range-slider').trigger('input');
-	selectedMonetizationTypes.clear();
-	selectedMovieGenres.clear();
-	excludedMovieGenres.clear();
-	selectedMovieProviders.clear();
-}
-
 function displayError() {
 	$('#movie-info').hide();
 	// get rid of background from movie
@@ -129,68 +117,6 @@ function loadGenres(genres) {
 			}
 		}
 	});
-}
-
-function loadProviders(providers) {
-	const selectedProviders = mediaTypeIsMovie ? selectedMovieProviders : selectedTvProviders;
-	$('#provider-selector').html('');
-	providers.forEach(item => {
-		$('#provider-selector').append(
-			`<li>
-				<input type="checkbox" id="provider-${item.provider_id}" value="${item.provider_id}" ${selectedProviders.has(item.provider_id.toString()) ? 'checked' : ''}>
-				<label for="provider-${item.provider_id}">
-					<img class="logo" src="${makeLogoURL(item.logo_path)}"/>
-					${item.provider_name}
-				</label>
-			</li>`
-		);
-	});
-	$('#provider-selector input[type="checkbox"]').click(function() {
-		const id = $(this).val();
-		if(selectedProviders.has(id)) {
-			selectedProviders.delete(id);
-		} else {
-			selectedProviders.add(id);
-		}
-	});
-}
-
-function loadMonitizationTypes() {
-	for(const type in monetizationTypes) {
-		const name = monetizationTypes[type];
-		$('#monetization-selector').append(
-			`<li>
-				<input type="checkbox" id="monetization-${type}" value="${type}">
-				<label for="monetization-${type}">${name}</label>
-			</li>`
-		);
-	}
-	$('#monetization-selector input[type="checkbox"]').click(function() {
-		const type = $(this).val();
-		if(selectedMonetizationTypes.has(type)) {
-			selectedMonetizationTypes.delete(type);
-		} else {
-			selectedMonetizationTypes.add(type);
-		}
-	});
-}
-
-function loadRegions() {
-	$('#regions').append(
-		allRegions.map(region => 
-			`<option value="${region.iso_3166_1}">${region.english_name}</option>`
-		).join('')
-	);
-	$('#regions').val(defaults.region);
-}
-
-function loadLanguages() {
-	$('#languages').append(
-		allLanguages.map(lang => 
-			`<option value="${lang.iso_639_1}">${lang.english_name}</option>`
-		).join('')
-	);
-	$('#languages').val(defaults.language);
 }
 
 async function main() {

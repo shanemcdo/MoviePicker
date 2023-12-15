@@ -146,7 +146,7 @@ type Tv = {
 	vote_count: number,
 };
 
-export enum MediaType {
+enum MediaType {
 	Movie = "Movie",
 	Tv = "Tv"
 };
@@ -208,6 +208,8 @@ export const [allTvProviders, setAllTvProviders] = createStore<Provider[]>([]);
 export const [allRegions, setAllRegions] = createStore<Region[]>([]);
 export const [allLanguages, setAllLanguages] = createStore<Language[]>([]);
 export const [media, setMedia] = createStore<Media | null>(null);
+export const allGenres = () => mediaTypeIsMovie() ? allMovieGenres : allTvGenres
+export const allProviders = () => mediaTypeIsMovie() ? allMovieProviders : allTvProviders
 // signals
 export const [mediaType, setMediaType] = createSignal(MediaType.Movie);
 export const mediaTypeIsMovie = () => mediaType() == MediaType.Movie;
@@ -218,8 +220,6 @@ export const [minRating, setMinRating] = createSignal(defaults.rating.min);
 export const [maxRating, setMaxRating] = createSignal(defaults.rating.max);
 export const [errorMessage, setErrorMessage] = createSignal('');
 
-export const allGenres = () => mediaTypeIsMovie() ? allMovieGenres : allTvGenres
-export const allProviders = () => mediaTypeIsMovie() ? allMovieProviders : allTvProviders
 
 function tvToMedia(tv: Tv): Media { 
 	const { name, original_name, first_air_date, ...others} = tv;
@@ -233,7 +233,7 @@ function tvToMedia(tv: Tv): Media {
 	};
 }
 
-export function random<T>(array: T[]): T {
+function random<T>(array: T[]): T {
 	return array[Math.floor(Math.random() * array.length)];
 }
 
@@ -248,10 +248,6 @@ export function makeLogoURL(path: string): string {
 export function makeBigLogoURL(path: string): string {
 	return `${bigLogoBaseURL}${path}`;
 }
-
-export function clearFilters() {
-
-};
 
 function getGenre(id: number, genres: Genre[]): string {
 	for(const genre of genres) {
