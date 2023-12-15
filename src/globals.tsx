@@ -352,7 +352,7 @@ async function getMovieOrTv(): Promise<Media | null> {
 			'with_watch_monetization_types': [...selectedMonetizationTypes].join('|'),
 			'vote_average.gte': untrack(minRating),
 			'vote_average.lte': untrack(maxRating),
-			'with_original_language': (document.querySelector('#languages') as HTMLSelectElement).value,
+			// 'with_original_language': (document.querySelector('#languages') as HTMLSelectElement).value,
 			'page': currentPage
 		};
 		console.table(args);

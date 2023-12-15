@@ -7,7 +7,14 @@ function getMoreLikeThis() {
 }
 */
 
+import { createEffect } from 'solid-js';
+import { media, displayMovieOrTv } from './globals'
+
 export default function MovieInfo() {
 	// TODO
+	// displayMovieOrTv();
+	createEffect(() => {
+		console.table({ ...media });
+	});
 	return <></>;
 }
