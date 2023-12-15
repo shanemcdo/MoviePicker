@@ -1,5 +1,5 @@
 import { Show, For } from 'solid-js';
-import { media, displayMovieOrTv, makePosterURL, allGenres } from './globals'
+import { media, displayMovieOrTv, makePosterURL, allGenres, errorMessage } from './globals'
 import MovieProviders from './MovieProviders'
 import './MovieInfo.scss'
 
@@ -30,7 +30,7 @@ export default function MovieInfo() {
 			fallback={
 				<div id="error-info">
 					<h1>No Movie</h1>
-					<p id="error-message">Loading...</p>
+					<p id="error-message">{errorMessage()}</p>
 				</div>
 			}
 		>
