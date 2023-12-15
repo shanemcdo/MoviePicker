@@ -1,9 +1,116 @@
-import { createSignal } from 'solid-js'
 import { createStore } from 'solid-js/store'
+import { createSignal, untrack } from 'solid-js'
 
 type Genre = {
 	id: number,
 	name: string
+};
+
+type DisplayPriorities = {
+	CA: number,
+	AE: number,
+	AR: number,
+	AT: number,
+	AU: number,
+	BE: number,
+	BO: number,
+	BR: number,
+	BG: number,
+	CH: number,
+	CL: number,
+	CO: number,
+	CR: number,
+	CZ: number,
+	DE: number,
+	DK: number,
+	EC: number,
+	EE: number,
+	EG: number,
+	ES: number,
+	FI: number,
+	FR: number,
+	GB: number,
+	GR: number,
+	GT: number,
+	HK: number,
+	HN: number,
+	HU: number,
+	ID: number,
+	IE: number,
+	IN: number,
+	IT: number,
+	JP: number,
+	LT: number,
+	LV: number,
+	MX: number,
+	MY: number,
+	NL: number,
+	NO: number,
+	NZ: number,
+	PE: number,
+	PH: number,
+	PL: number,
+	PT: number,
+	PY: number,
+	RU: number,
+	SA: number,
+	SE: number,
+	SG: number,
+	SK: number,
+	TH: number,
+	TR: number,
+	TW: number,
+	US: number,
+	VE: number,
+	ZA: number,
+	SI: number,
+	CV: number,
+	GH: number,
+	MU: number,
+	MZ: number,
+	UG: number,
+	IL: number,
+	BY: number,
+	BZ: number,
+	CY: number,
+	LU: number,
+	NI: number,
+	UA: number
+};
+
+type Provider = { 
+	display_priorities: DisplayPriorities,
+	display_priority: number,
+	logo_path: string,
+	provider_name: string,
+	provider_id: number
+};
+
+type Region = {
+	iso_3166_1: string,
+	english_name: string,
+	native_name: string
+};
+
+type Language = {
+	iso_639_1: string,
+	english_name: string,
+	name: string
+};
+
+type Args = {
+	watch_region: string,
+	certification_country: string,
+	'certification.gte': string,
+	'certification.lte': string,
+	with_genres: string,
+	without_genres: string,
+	with_watch_providers: string,
+	with_watch_monetization_types: string,
+	'vote_average.gte': number,
+	'vote_average.lte': number,
+	with_original_language: string,
+	page: number
 };
 
 export enum MediaType {
@@ -31,13 +138,50 @@ const tmdbOptions = {
 		Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxOWNjMDI5ODQzODAyMjI5MmFiNTBiZmI2OWEzODUwMiIsInN1YiI6IjYzMWY5ZGMyZTU1OTM3MDA3YWRhMWUxNCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.B4o3rNSDNFr_2_1l0hHCWEQO-YNZ1CAk7QtPrzeQwQo'
 	}
 };
+const defaults = {
+	rating: {
+		min: 0,
+		max: 10
+	},
+	region: 'US',
+	language: 'en',
+};
+const monetizationTypes = { 
+	flatrate: 'Stream',
+	buy: 'Buy',
+	rent: 'Rent',
+};
+// TODO
+const selectedMonetizationTypes = new Set();
+const selectedMovieGenres = new Set();
+const selectedTvGenres = new Set();
+const excludedMovieGenres = new Set();
+const excludedTvGenres = new Set();
+const selectedMovieProviders = new Set();
+const selectedTvProviders = new Set();
 
+const seenMovies = new Set();
+const seenTvs = new Set();
+let currentMoviePage = 1;
+let currentTvPage = 1;
+let previousMovieFilters: Partial<Args> = {};
+let previousTvFilters: Partial<Args> = {};
+
+// stores
+export const [allMovieGenres, setAllMovieGenres] = createStore<Genre[]>([]);
+export const [allTvGenres, setAllTvGenres] = createStore<Genre[]>([]);
+export const [allMovieProviders, setAllMovieProviders] = createStore<Provider[]>([]);
+export const [allTvProviders, setAllTvProviders] = createStore<Provider[]>([]);
+export const [allRegions, setAllRegions] = createStore<Region[]>([]);
+export const [allLanguages, setAllLanguages] = createStore<Language[]>([]);
+// signals
 export const [mediaType, setMediaType] = createSignal(MediaType.Movie);
 export const mediaTypeIsMovie = () => mediaType() == MediaType.Movie;
 export const [filtersSidebarIsOpen, setFiltersSideBarIsOpen] = createSignal(false);
 export const toggleFiltersSidebar = () => setFiltersSideBarIsOpen(b => !b);
-export const [allMovieGenres, setAllMovieGenres] = createStore<Genre[]>([]);
-export const [allTvGenres, setAllTvGenres] = createStore<Genre[]>([]);
+export const [region, setRegion] = createSignal(defaults.region);
+export const [minRating, setMinRating] = createSignal(defaults.rating.min);
+export const [maxRating, setMaxRating] = createSignal(defaults.rating.max);
 
 export function random<T>(array: T[]): T {
 	return array[Math.floor(Math.random() * array.length)];
@@ -54,6 +198,10 @@ export function makeLogoURL(path: string): string {
 export function makeBigLogoURL(path: string): string {
 	return `${bigLogoBaseURL}${path}`;
 }
+
+export function clearFilters() {
+
+};
 
 function getGenre(id: number, genres: Genre[]): string {
 	for(const genre of genres) {
@@ -72,7 +220,152 @@ export function getTvGenre(id: number): string {
 	return getGenre(id, allTvGenres);
 }
 
+export async function getMovieGenres(): Promise<Genre[]> {
+	const res = await fetch(movieGenreListURL, tmdbOptions);
+	return (await res.json()).genres;
+}
+
+export async function getTvGenres(): Promise<Genre[]> {
+	const res = await fetch(tvGenreListURL, tmdbOptions);
+	return (await res.json()).genres;
+}
+
+export async function getAllMovieProviders(): Promise<Provider[]> {
+	const res = await fetch(movieProviderListURL, tmdbOptions);
+	return (await res.json()).results;
+}
+
+export async function getAllTvProviders(): Promise<Provider[]> {
+	const res = await fetch(tvProviderListURL, tmdbOptions);
+	return (await res.json()).results;
+}
+
+export async function getRegions(): Promise<Region[]> {
+	const res = await fetch(regionListURL, tmdbOptions);
+	return (await res.json()).results;
+}
+
+export async function getLanguages(): Promise<Language[]> {
+	const res = await fetch(languagesListURL, tmdbOptions);
+	return await res.json();
+};
+
+export async function getMovieProviders(movieId: number): Promise<Provider> {
+	const url = `${apiBaseURL}/movie/${movieId}/watch/providers`;
+	const res = await fetch(url, tmdbOptions);
+	return (await res.json()).results.US;
+}
+
+export async function getTvProviders(tvId: number): Promise<Provider> {
+	const url = `${apiBaseURL}/tv/${tvId}/watch/providers`;
+	const res = await fetch(url, tmdbOptions);
+	return (await res.json()).results.US;
+}
+
+async function getMedia(args: Args, baseURL: string) {
+	const url = new URL(baseURL);
+	const a: { [key: string]: string } = { ...args, page: args.page.toString() };
+	for(const arg in a) {
+		if(!a[arg]) continue;
+		url.searchParams.set(arg, a[arg]);
+	}
+	try {
+		const res = await fetch(url, tmdbOptions);
+		return await res.json();
+	} catch (e) {
+		return null;
+	}
+}
+async function getMovies(args: Args) {
+	return getMedia(args, discoverMovieBaseURL);
+}
+
+async function getTvs(args: Args) {
+	return getMedia(args, discoverTvBaseURL);
+}
+
+async function getMovieOrTv() {
+	const isMovie = untrack(mediaTypeIsMovie);
+	let selectedGenres    = isMovie ? selectedMovieGenres    : selectedTvGenres;
+	let excludedGenres    = isMovie ? excludedMovieGenres    : excludedTvGenres;
+	let selectedProviders = isMovie ? selectedMovieProviders : selectedTvProviders;
+	let currentPage       = isMovie ? currentMoviePage       : currentTvPage;
+	let previousFilters   = isMovie ? previousMovieFilters   : previousTvFilters;
+	let getMediaList      = isMovie ? getMovies              : getTvs;
+	let seenMedia         = isMovie ? seenMovies             : seenTvs
+	while(1){
+		const args: Args = {
+			'watch_region': untrack(region),
+			'certification_country': 'US',
+			'certification.gte': 'G',
+			'certification.lte': 'R',
+			'with_genres': [...selectedGenres].join(','),
+			'without_genres': [...excludedGenres].join(','),
+			'with_watch_providers': [...selectedProviders].join('|'),
+			'with_watch_monetization_types': [...selectedMonetizationTypes].join('|'),
+			'vote_average.gte': untrack(minRating),
+			'vote_average.lte': untrack(maxRating),
+			'with_original_language': (document.querySelector('#languages') as HTMLSelectElement).value,
+			'page': currentPage
+		};
+		console.table(args);
+		if(
+			args.with_genres !== previousFilters.with_genres
+			|| args.without_genres !== previousFilters.without_genres
+			|| args.with_watch_providers !== previousFilters.with_watch_providers
+			|| args['vote_average.gte'] !== previousFilters['vote_average.gte']
+			|| args['vote_average.lte'] !== previousFilters['vote_average.lte']
+			|| args['watch_region'] !== previousFilters['watch_region']
+			|| args['with_original_language'] !== previousFilters['with_original_language']
+		) {
+			args.page = currentPage = 1;
+			if(isMovie) {
+				currentMoviePage = 1;
+			} else {
+				currentTvPage = 1;
+			}
+		}
+		previousFilters = args;
+		if(isMovie) {
+			previousMovieFilters = args;
+		} else {
+			previousTvFilters = args;
+		}
+		const media = await getMediaList(args);
+		const mediaType = isMovie ? 'movie' : 'shows';
+		if(media === null) {
+			$('#error-message').html('Could not connect to API');
+			return null;
+		}
+		if(media.results === undefined) {
+			$('#error-message').html(`API returned message: ${media.status_message}`);
+			return null;
+		}
+		if(media.total_pages < 1) {
+			$('#error-message').html(`No ${mediaType} found with selected filters`);
+			return null;
+		}
+		if(media.total_pages < currentPage) {
+			$('#error-message').html(`No more ${mediaType} remaining`);
+			return null;
+		}
+		const filteredArray = media.results.filter(item => !seenMedia.has(item.id));
+		if(filteredArray.length > 0) {
+			return random(filteredArray);
+		}
+		currentPage += 1;
+		if(isMovie) {
+			currentMoviePage = currentPage;
+		} else {
+			currentTvPage = currentPage;
+		}
+	}
+}
+
+
+
+
+
 export function displayMovieOrTv() {
 	// TODO
 }
-
