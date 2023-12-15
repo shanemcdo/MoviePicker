@@ -1,5 +1,6 @@
-import { createEffect, Show, For } from 'solid-js';
+import { Show, For } from 'solid-js';
 import { media, displayMovieOrTv, makePosterURL, allGenres } from './globals'
+import MovieProviders from './MovieProviders'
 import './MovieInfo.scss'
 
 function getGenre(id: number): string {
@@ -23,13 +24,9 @@ function getMoreLikeThis() {
 
 export default function MovieInfo() {
 	displayMovieOrTv();
-	createEffect(() => {
-		console.table({ ...media });
-		console.log(allGenres());
-	});
 	return <div id="movie-info-wrapper">
 		<Show
-			when={media !== null}
+			when={Object.keys(media).length > 0}
 			fallback={
 				<div id="error-info">
 					<h1>No Movie</h1>
@@ -54,7 +51,7 @@ export default function MovieInfo() {
 						}</For>
 					</div>
 					<p id="movie-desc">{media?.overview}</p>
-					<div id="movie-providers"></div>
+					<MovieProviders id={media?.id!} />
 					<button class="normal-button" onClick={getMoreLikeThis} title="Find another movie with the same genres">More Like This</button>
 				</div>
 			</div>

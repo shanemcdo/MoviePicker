@@ -86,6 +86,13 @@ type Provider = {
 	provider_id: number
 };
 
+type Providers = {
+	link: string,
+	rent?: Provider[],
+	flatrate?: Provider[],
+	buy?: Provider[]
+};
+
 type Region = {
 	iso_3166_1: string,
 	english_name: string,
@@ -207,7 +214,7 @@ export const [allMovieProviders, setAllMovieProviders] = createStore<Provider[]>
 export const [allTvProviders, setAllTvProviders] = createStore<Provider[]>([]);
 export const [allRegions, setAllRegions] = createStore<Region[]>([]);
 export const [allLanguages, setAllLanguages] = createStore<Language[]>([]);
-export const [media, setMedia] = createStore<Media | null>(null);
+export const [media, setMedia] = createStore<Partial<Media>>({});
 export const allGenres = () => mediaTypeIsMovie() ? allMovieGenres : allTvGenres
 export const allProviders = () => mediaTypeIsMovie() ? allMovieProviders : allTvProviders
 // signals
@@ -294,17 +301,19 @@ export function getAllApiData() {
 	});
 };
 
-export async function getMovieProviders(movieId: number): Promise<Provider> {
+async function getMovieProviders(movieId: number): Promise<Providers> {
 	const url = `${apiBaseURL}/movie/${movieId}/watch/providers`;
 	const res = await fetch(url, tmdbOptions);
 	return (await res.json()).results.US;
 }
 
-export async function getTvProviders(tvId: number): Promise<Provider> {
+async function getTvProviders(tvId: number): Promise<Providers> {
 	const url = `${apiBaseURL}/tv/${tvId}/watch/providers`;
 	const res = await fetch(url, tmdbOptions);
 	return (await res.json()).results.US;
 }
+
+export const getProviders = async (id: number) => await (mediaTypeIsMovie() ? getMovieProviders(id) : getTvProviders(id));
 
 async function getMedia(args: Record<string, string | number>, baseURL: string): Promise<any> {
 	const url = new URL(baseURL);
@@ -352,7 +361,6 @@ async function getMovieOrTv(): Promise<Media | null> {
 			'with_original_language': (document.querySelector('#languages') as HTMLSelectElement)?.value ?? defaults.language,
 			'page': currentPage
 		};
-		console.table(args);
 		if(
 			args.with_genres !== previousFilters.with_genres
 			|| args.without_genres !== previousFilters.without_genres
