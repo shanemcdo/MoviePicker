@@ -64,6 +64,7 @@ function clearFilters() {
 
 function searchList(this: HTMLInputElement) {
 	const val = this.value.toLowerCase();
+	// TODO: jQuery could be alot faster. remember you have a stash for that
 	this.parentElement?.querySelectorAll('li').forEach(el => {
 		const labelName = el.querySelector('label')?.innerText?.toLowerCase() ?? '';
 		if(labelName === '') return;
