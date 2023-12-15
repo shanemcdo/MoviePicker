@@ -1,5 +1,5 @@
 import { Show, For, createEffect } from 'solid-js';
-import { media, displayMovieOrTv, makePosterURL, allGenres, errorMessage } from './globals'
+import { media, displayMovieOrTv, makePosterURL, allGenres, errorMessage, selectedGenres } from './globals'
 import MovieProviders from './MovieProviders'
 import './MovieInfo.scss'
 
@@ -8,15 +8,18 @@ function getGenre(id: number): string {
 }
 
 function getMoreLikeThis() {
-/*
-	selectedMovieGenres.clear();
-	$('#genre-selector input[type="checkbox"]').prop('checked', false);
-	$('.movie-genre').click();
-*/
-	// TODO clear selected genres
-	document.querySelectorAll('.movie-genre').forEach(el => {
-		// TODO select movie genres
-		console.log(el);
+	selectedGenres().clear()
+	document.querySelectorAll('#genre-selector input[type="checkbox"]').forEach(ele => {
+		const el = ele as HTMLInputElement;
+		el.checked = false;
+	})
+	document.querySelectorAll('#genre-selector label').forEach(ele => {
+		const el = ele as HTMLLabelElement;
+		el.style.textDecoration = '';
+	})
+	document.querySelectorAll('.movie-genre').forEach(ele => {
+		const el = ele as HTMLElement;
+		el.click();
 	})
 	displayMovieOrTv();
 }
@@ -50,7 +53,13 @@ export default function MovieInfo() {
 					</div>
 					<div id="movie-genres">
 						<For each={media?.genre_ids}>{id =>
-							<span class="movie-genre" data-genre-id={id}>{getGenre(id)}</span>
+							<span class="movie-genre" data-genre-id={id}
+								onClick={e =>{
+									const el = e.target as HTMLSpanElement;
+									const id = el.dataset.genreId!;
+									document.getElementById(`genre-${id}`)?.click();
+								}}
+							>{getGenre(id)}</span>
 						}</For>
 					</div>
 					<p id="movie-desc">{media?.overview}</p>
