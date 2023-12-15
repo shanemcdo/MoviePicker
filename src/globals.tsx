@@ -237,7 +237,7 @@ function random<T>(array: T[]): T {
 	return array[Math.floor(Math.random() * array.length)];
 }
 
-export function makeImageUrl(path: string): string {
+export function makePosterURL(path: string): string {
 	return `${posterBaseURL}${path}`;
 };
 
@@ -247,23 +247,6 @@ export function makeLogoURL(path: string): string {
 
 export function makeBigLogoURL(path: string): string {
 	return `${bigLogoBaseURL}${path}`;
-}
-
-function getGenre(id: number, genres: Genre[]): string {
-	for(const genre of genres) {
-		if(id == genre.id) {
-			return genre.name;
-		}
-	}
-	return '';
-}
-
-export function getMovieGenre(id: number): string {
-	return getGenre(id, allMovieGenres);
-}
-
-export function getTvGenre(id: number): string {
-	return getGenre(id, allTvGenres);
 }
 
 async function getMovieGenres(): Promise<Genre[]> {
@@ -297,19 +280,18 @@ async function getLanguages(): Promise<Language[]> {
 };
 
 export function getAllApiData() {
-	// TODO uncomment when ready to not spam API
-	// getMovieGenres().then(setAllMovieGenres);
-	// getTvGenres().then(setAllTvGenres);
-	// getAllMovieProviders().then(setAllMovieProviders);
-	// getAllTvProviders().then(setAllTvProviders);
-	// getRegions().then(regions => {
-	// 	setAllRegions(regions);
-	// 	(document.querySelector('#regions') as HTMLSelectElement).value = defaults.region;
-	// });
-	// getLanguages().then(langs => {
-	// 	setAllLanguages(langs);
-	// 	(document.querySelector('#languages') as HTMLSelectElement).value = defaults.language;
-	// });
+	getMovieGenres().then(setAllMovieGenres);
+	getTvGenres().then(setAllTvGenres);
+	getAllMovieProviders().then(setAllMovieProviders);
+	getAllTvProviders().then(setAllTvProviders);
+	getRegions().then(regions => {
+		setAllRegions(regions);
+		(document.querySelector('#regions') as HTMLSelectElement).value = defaults.region;
+	});
+	getLanguages().then(langs => {
+		setAllLanguages(langs);
+		(document.querySelector('#languages') as HTMLSelectElement).value = defaults.language;
+	});
 };
 
 export async function getMovieProviders(movieId: number): Promise<Provider> {
@@ -357,7 +339,7 @@ async function getMovieOrTv(): Promise<Media | null> {
 	let seenMedia         = isMovie ? seenMovies             : seenTvs
 	while(1){
 		const args: Args = {
-			'watch_region': (document.querySelector('#regions') as HTMLSelectElement).value,
+			'watch_region': (document.querySelector('#regions') as HTMLSelectElement)?.value ?? defaults.region,
 			'certification_country': 'US',
 			'certification.gte': 'G',
 			'certification.lte': 'R',
@@ -367,7 +349,7 @@ async function getMovieOrTv(): Promise<Media | null> {
 			'with_watch_monetization_types': [...selectedMonetizationTypes].join('|'),
 			'vote_average.gte': untrack(minRating),
 			'vote_average.lte': untrack(maxRating),
-			'with_original_language': (document.querySelector('#languages') as HTMLSelectElement).value,
+			'with_original_language': (document.querySelector('#languages') as HTMLSelectElement)?.value ?? defaults.language,
 			'page': currentPage
 		};
 		console.table(args);
