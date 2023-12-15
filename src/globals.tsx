@@ -301,19 +301,19 @@ async function getLanguages(): Promise<Language[]> {
 };
 
 export function getAllApiData() {
-	getMovieGenres().then(setAllMovieGenres);
 	// TODO uncomment when ready to not spam API
-	getTvGenres().then(setAllTvGenres);
-	getAllMovieProviders().then(setAllMovieProviders);
-	getAllTvProviders().then(setAllTvProviders);
-	getRegions().then(regions => {
-		setAllRegions(regions);
-		(document.querySelector('#regions') as HTMLSelectElement).value = defaults.region;
-	});
-	getLanguages().then(langs => {
-		setAllLanguages(langs);
-		(document.querySelector('#languages') as HTMLSelectElement).value = defaults.language;
-	});
+	// getMovieGenres().then(setAllMovieGenres);
+	// getTvGenres().then(setAllTvGenres);
+	// getAllMovieProviders().then(setAllMovieProviders);
+	// getAllTvProviders().then(setAllTvProviders);
+	// getRegions().then(regions => {
+	// 	setAllRegions(regions);
+	// 	(document.querySelector('#regions') as HTMLSelectElement).value = defaults.region;
+	// });
+	// getLanguages().then(langs => {
+	// 	setAllLanguages(langs);
+	// 	(document.querySelector('#languages') as HTMLSelectElement).value = defaults.language;
+	// });
 };
 
 export async function getMovieProviders(movieId: number): Promise<Provider> {
