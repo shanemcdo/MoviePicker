@@ -423,5 +423,5 @@ async function getMovieOrTv(): Promise<Media | null> {
 
 export async function displayMovieOrTv() {
 	const media = await getMovieOrTv()!;
-	setMedia(media);
+	setMedia(media ?? {});
 }
