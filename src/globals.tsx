@@ -215,6 +215,13 @@ export const [allTvProviders, setAllTvProviders] = createStore<Provider[]>([]);
 export const [allRegions, setAllRegions] = createStore<Region[]>([]);
 export const [allLanguages, setAllLanguages] = createStore<Language[]>([]);
 export const [media, setMedia] = createStore<Partial<Media>>({});
+export const clearMedia = () => setMedia(m => {
+	const result:  Record<string, undefined> = {};
+	for(const key of Object.keys(m)) {
+		result[key] = undefined;
+	}
+	return result;
+});
 export const allGenres = () => mediaTypeIsMovie() ? allMovieGenres : allTvGenres
 export const allProviders = () => mediaTypeIsMovie() ? allMovieProviders : allTvProviders
 export const selectedGenres = () => mediaTypeIsMovie() ? selectedMovieGenres : selectedTvGenres;
@@ -425,6 +432,10 @@ async function getMovieOrTv(): Promise<Media | null> {
 
 
 export async function displayMovieOrTv() {
-	const media = await getMovieOrTv()!;
-	setMedia(media ?? {});
+	const media = await getMovieOrTv();
+	if(media === null) {
+		clearMedia();
+		return
+	}
+	setMedia(media);
 }

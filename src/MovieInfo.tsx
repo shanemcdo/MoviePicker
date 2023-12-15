@@ -25,7 +25,7 @@ function getMoreLikeThis() {
 export default function MovieInfo() {
 	displayMovieOrTv();
 	createEffect(() => {
-		document.body.style.backgroundImage = `linear-gradient(var(--bg-transparent), var(--bg-transparent)), url(${makePosterURL(media?.backdrop_path)})`;
+		document.body.style.backgroundImage = `linear-gradient(var(--bg-transparent), var(--bg-transparent)), url(${makePosterURL(media?.backdrop_path ?? '')})`;
 	});
 	return <div id="movie-info-wrapper">
 		<Show
