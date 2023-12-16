@@ -1,5 +1,6 @@
 import { getProviders, makeBigLogoURL, monetizationTypes } from './globals'
 import { Suspense, For, createResource, Show } from 'solid-js'
+import './MovieProviders.scss'
 
 type Props = { id: number };
 
