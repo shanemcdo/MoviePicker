@@ -1,5 +1,5 @@
-import { createStore } from 'solid-js/store'
-import { createSignal, untrack } from 'solid-js'
+import { createStore } from 'solid-js/store';
+import { createSignal, untrack } from 'solid-js';
 
 type Genre = {
 	id: number,

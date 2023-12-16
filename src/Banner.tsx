@@ -1,5 +1,5 @@
-import { mediaType, filtersSidebarIsOpen, toggleFiltersSidebar, displayMovieOrTv } from './globals'
-import './Banner.scss'
+import { mediaType, filtersSidebarIsOpen, toggleFiltersSidebar, displayMovieOrTv } from './globals';
+import './Banner.scss';
 
 export default function Banner() {
 	return <nav id="banner">

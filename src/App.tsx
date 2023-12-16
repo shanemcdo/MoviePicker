@@ -1,8 +1,8 @@
-import './App.css'
-import Banner from './Banner'
-import Filters from './Filters'
-import MovieInfo from './MovieInfo'
-import { getAllApiData } from './globals'
+import './App.css';
+import Banner from './Banner';
+import Filters from './Filters';
+import MovieInfo from './MovieInfo';
+import { getAllApiData } from './globals';
 
 export default function App() {
 	getAllApiData();

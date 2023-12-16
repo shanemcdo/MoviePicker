@@ -1,7 +1,7 @@
 import { Show, For, createEffect } from 'solid-js';
-import { media, displayMovieOrTv, makePosterURL, allGenres, errorMessage, selectedGenres } from './globals'
-import MovieProviders from './MovieProviders'
-import './MovieInfo.scss'
+import { media, displayMovieOrTv, makePosterURL, allGenres, errorMessage, selectedGenres } from './globals';
+import MovieProviders from './MovieProviders';
+import './MovieInfo.scss';
 
 function getGenre(id: number): string {
 	return allGenres().find(genre => genre.id === id)?.name ?? '';

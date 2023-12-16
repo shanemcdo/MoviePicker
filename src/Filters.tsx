@@ -1,4 +1,4 @@
-import tmdbLogo from './assets/tmdb.png'
+import tmdbLogo from './assets/tmdb.png';
 import {
 	minRating,
 	maxRating,
@@ -19,9 +19,9 @@ import {
     excludedGenres,
     selectedProviders,
     selectedMonetizationTypes,
-} from './globals'
-import { createEffect, For, on } from 'solid-js'
-import './Filters.scss'
+} from './globals';
+import { createEffect, For, on } from 'solid-js';
+import './Filters.scss';
 
 function sliderProps(partialName: 'min' | 'max') {
 	const name = partialName + '-slider';
