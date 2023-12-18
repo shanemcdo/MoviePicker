@@ -190,7 +190,8 @@ export const monetizationTypes = {
 	flatrate: 'Stream',
 	buy: 'Buy',
 	rent: 'Rent',
-};
+} as const;
+export type MonetizationTypes = keyof typeof monetizationTypes;
 // TODO
 export const selectedMonetizationTypes = new Set();
 const selectedMovieGenres = new Set();

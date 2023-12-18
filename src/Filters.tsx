@@ -19,6 +19,7 @@ import {
     excludedGenres,
     selectedProviders,
     selectedMonetizationTypes,
+    MonetizationTypes,
 } from './globals';
 import { createEffect, For, on } from 'solid-js';
 import './Filters.scss';
@@ -187,8 +188,8 @@ export default function Filters() {
 		<details>
 			<summary>Monetization Types</summary>
 			<ul id="monetization-selector" class="selector-list">
-				<For each={Object.keys(monetizationTypes)}>{type => {
-					const name = (monetizationTypes as { [key: string]: string })[type];
+				<For each={Object.keys(monetizationTypes) as MonetizationTypes[]}>{type => {
+					const name = monetizationTypes[type];
 					const id = `monetization-${type}`;
 					return <li>
 						<input
